@@ -17,7 +17,7 @@ pipeline {
 	}
 	
 	stages {
-		stage {
+		stage('Checkout') {
 			steps {
 				echo "------------>Checkout<------------"
 			}
