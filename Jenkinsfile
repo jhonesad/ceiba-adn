@@ -29,15 +29,31 @@ pipeline {
 					submoduleCfg: [],
 					userRemoteConfigs:[[
 						credentialsId: 'GitHub_jhonesad',
-						url: 'https://github.com/jhonesad/ceiba-adn'
+						url: 'https://github.com/jhonesad/ceiba-adn.git'
 					]]
 				])
 			}
 		}
 		
-		stage('Compile & Unit Tests') {       
+		stage('Build project') { 
+			steps { 
+				echo "------------>Build project<------------"
+				sh 'gradle --b ./ServicioBarberia/build.gradle clean'
+				sh 'gradle --b ./ServicioBarberia/build.gradle build'
+			}
+		}
+		
+		stage('Unit Tests & Coverage') {       
 			steps {         
 				echo "------------>Unit Tests<------------"
+				sh 'gradle --b ./ServicioBarberia/build.gradle test'
+				/* sh 'gradle --b ./ServicioBarberia/build.gradle jacocoTestReport' */
+			}
+		}
+		
+		stage('Integration Tests') {
+			steps {
+				echo "------------>Integration Tests<------------"
 			}
 		}
 		
@@ -47,12 +63,6 @@ pipeline {
 				withSonarQubeEnv('Sonar') { 
 					sh "${tool name: 'SonarScanner', type:'hudson.plugins.sonar.SonarRunnerInstallation'}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
 				}
-			}
-		}
-		
-		stage('Build') {
-			steps {
-				echo "------------>Build<------------"
 			}
 		}
 	}
@@ -66,6 +76,9 @@ pipeline {
 		}
 		failure {
 			echo 'This will run only if failed'
+			mail( to: 'jhon.alcaraz@ceiba.com.co' ,
+					body: "Build failed in Jenkins: Project: ${env.JOB_NAME} Build /n Number: ${env.BUILD_NUMBER} URL de build: ${env.BUILD_NUMBER}/n/n Please go to ${env.BUILD_URL} and verify the build", 
+					subject: "ERROR CI: Project name → ${env.JOB_NAME}")
 		}
 		unstable {
 			echo 'This will run only if the run was marked as unstable'

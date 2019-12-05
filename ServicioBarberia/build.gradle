@@ -1,0 +1,53 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.1.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
+	id 'jacoco'
+	id "org.sonarqube" version "2.7"
+}
+
+group = 'com.ceiba'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+sonarqube {
+	properties {
+		property "sonar.sourceEncoding", "UTF-8"
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'jacoco'
+
+
+dependencies {
+	compile('org.modelmapper:modelmapper:1.1.0')
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	runtimeOnly 'com.h2database:h2'
+	testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+	testCompile 'junit:junit:4.12'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+test {
+	useJUnitPlatform()
+	dependsOn 'cleanTest'
+}
+
+sonarqube {
+	properties {
+		property "sonar.sources", "src/main/java"
+		property "sonar.java.binaries", "build/classes/java/main"
+		property "sonar.tests", "src/test/java"
+		property "sonar.test.binaries", "build/classes/java/test"
+		property "sonar.jacoco.reportPaths", "build/jacoco/test.exec"
+		property "sonar.junit.reportPaths", "build/test-results/test"
+	}
+}
