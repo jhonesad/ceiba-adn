@@ -10,31 +10,54 @@ public class Novedad {
 	private String descripcion;
 	private Boolean festivo;
 	
+	public Novedad() {
+	}
+	
 	public Novedad(Date fechaInicio, Date fechaFin, Barbero barbero, String descripcion, Boolean festivo) {
-		this.fechaInicio = fechaInicio;
-		this.fechaFin = fechaFin;
-		this.barbero = barbero;
-		this.descripcion = descripcion;
-		this.festivo = festivo;
+		this.setFechaInicio(fechaInicio);
+		this.setFechaFin(fechaFin);
+		this.setBarbero(barbero);
+		this.setDescripcion(descripcion);
+		this.setFestivo(festivo);
 	}
 	
 	public Date getFechaInicio() {
 		return fechaInicio;
 	}
 
+	public void setFechaInicio(Date fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
+
 	public Date getFechaFin() {
 		return fechaFin;
+	}
+
+	public void setFechaFin(Date fechaFin) {
+		this.fechaFin = fechaFin;
 	}
 
 	public Barbero getBarbero() {
 		return barbero;
 	}
 
+	public void setBarbero(Barbero barbero) {
+		this.barbero = barbero;
+	}
+
 	public String getDescripcion() {
 		return descripcion;
 	}
 
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
 	public Boolean getFestivo() {
 		return festivo;
+	}
+
+	public void setFestivo(Boolean festivo) {
+		this.festivo = festivo;
 	}	
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ceiba.barberia.aplicacion.manejador.ManejadorCitas;
+import com.ceiba.barberia.dominio.entidades.Barbero;
 import com.ceiba.barberia.dominio.entidades.Cita;
 
 @RestController
@@ -23,7 +24,7 @@ public class CitaControlador {
 	
 	@PostMapping("/agendar-cita")
 	public Cita agendarCita() {
-		return this.manejadorCitas.agendarCita(new Date(), "001", true, true, false, "prueba Jhones");
+		return this.manejadorCitas.agendarCita(new Date(), new Barbero("001", null), true, true, false, "prueba Jhones");
 	}
 	
 	@GetMapping("/listar-citas")

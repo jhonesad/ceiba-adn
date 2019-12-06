@@ -14,10 +14,10 @@ public class Cita {
 	public Cita() {
 	}
 	
-	public Cita(Date fecha, String codigoBarbero, Boolean corteCabello, Boolean corteBarba, 
+	public Cita(Date fecha, Barbero barbero, Boolean corteCabello, Boolean corteBarba, 
 			Boolean lavado, String nombreCliente) {
 		this.setFecha(fecha);
-		this.setBarbero(new Barbero(codigoBarbero, null));
+		this.setBarbero(barbero);
 		this.setCorteCabello(corteCabello);
 		this.setCorteBarba(corteBarba);
 		this.setLavado(lavado);
