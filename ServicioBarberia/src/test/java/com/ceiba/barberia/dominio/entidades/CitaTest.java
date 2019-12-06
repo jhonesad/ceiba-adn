@@ -26,7 +26,7 @@ public class CitaTest {
 		Boolean lavado = false;
 		String nombreCliente = "cliente de prueba";
 		
-		Cita cita = new Cita();
+		Cita cita = new Cita(new Date(), null, true, false, true, "");
 		cita.setFecha(fecha);
 		cita.setBarbero(barbero);
 		cita.setCorteCabello(corteCabello);

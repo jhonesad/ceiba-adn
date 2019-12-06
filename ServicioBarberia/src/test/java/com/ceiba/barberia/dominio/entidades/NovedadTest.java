@@ -25,7 +25,7 @@ public class NovedadTest {
 		String descripcion = "descripcion prueba";
 		Boolean festivo = true;
 		
-		Novedad novedad = new Novedad();
+		Novedad novedad = new Novedad(new Date(), new Date(), null, "", false);
 		novedad.setFechaInicio(fechaInicio);
 		novedad.setFechaFin(fechaFin);
 		novedad.setBarbero(barbero);
