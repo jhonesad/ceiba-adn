@@ -15,14 +15,14 @@ public class BarberoTest {
 	
 	@Test
 	public void validarGettersSetters() {
-		String codigo = "002";
+		Long id = 2l;
 		String nombre = "Test barbero";
-		Barbero barbero = new Barbero("001", null);
+		Barbero barbero = new Barbero(1l, null);
 		
-		barbero.setCodigo(codigo);
+		barbero.setId(id);
 		barbero.setNombre(nombre);
 		
-		boolean validacion = barbero.getCodigo().equals(codigo);
+		boolean validacion = barbero.getId().equals(id);
 		validacion = validacion && barbero.getNombre().equals(nombre);
 		
 		assertTrue(validacion);

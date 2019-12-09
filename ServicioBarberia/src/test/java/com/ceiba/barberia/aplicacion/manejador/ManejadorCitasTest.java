@@ -11,12 +11,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.ceiba.barberia.aplicacion.comando.ComandoCita;
 import com.ceiba.barberia.aplicacion.fabrica.FabricaCita;
 import com.ceiba.barberia.dominio.entidades.Barbero;
 import com.ceiba.barberia.dominio.entidades.Cita;
 import com.ceiba.barberia.dominio.servicio.ServicioCita;
-import com.ceiba.barberia.testdatabuilder.BarberoTestDataBuilder;
-import com.ceiba.barberia.testdatabuilder.CitaTestDataBuilder;
+import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
+import com.ceiba.barberia.testdatabuilder.CitaDataBuilder;
+import com.ceiba.barberia.testdatabuilder.ComandoBarberoDataBuilder;
+import com.ceiba.barberia.testdatabuilder.ComandoCitaDataBuilder;
 
 public class ManejadorCitasTest {
 
@@ -33,26 +36,28 @@ public class ManejadorCitasTest {
 	
 	@Test
 	public void listarCitas() {
-		Cita citaMock = CitaTestDataBuilder.aCitaTestDataBuilder().build();
+		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
 		List<Cita> listaCitasMock = new ArrayList<Cita>();
 		listaCitasMock.add(citaMock);
 		Mockito.when(servicioCita.listarCitas()).thenReturn(listaCitasMock);
 		
-		List<Cita> citas = manejadorCitas.listarCitas();
+		List<ComandoCita> citas = manejadorCitas.listarCitas();
 		
 		assertFalse(citas.isEmpty());
 	}
 	
 	@Test
 	public void agendarCita() {
+		Long id = 5l;
 		Date fecha = new Date(); 
-		Barbero barbero = BarberoTestDataBuilder.aBarberoTestDataBuilder().build();
+		Barbero barbero = BarberoDataBuilder.aBarberoDataBuilder().build();
 		Boolean corteCabello = true; 
 		Boolean corteBarba = false; 
 		Boolean lavado = true; 
 		String nombreCliente = "cliente";
 		
-		Cita citaMock = CitaTestDataBuilder.aCitaTestDataBuilder()
+		Cita citaMock = CitaDataBuilder.aCitaDataBuilder()
+				.withId(id)
 				.withFecha(fecha)
 				.withBarbero(barbero)
 				.withCorteCabello(corteCabello)
@@ -60,13 +65,27 @@ public class ManejadorCitasTest {
 				.withLavado(lavado)
 				.withNombreCliente(nombreCliente)
 				.build();
-		Mockito.when(fabricaCita.cita(fecha, barbero, corteCabello, corteBarba, lavado, nombreCliente))
+		ComandoCita comandoCitaMock = ComandoCitaDataBuilder
+				.aComandoCitaDataBuilder()
+				.withId(null)
+				.withFecha(fecha)
+				.withBarbero(ComandoBarberoDataBuilder.aComandoBarberoDataBuilder()
+						.withId(barbero.getId())
+						.withNombre(barbero.getNombre())
+						.build())
+				.withCorteCabello(corteCabello)
+				.withCorteBarba(corteBarba)
+				.withLavado(lavado)
+				.withNombreCliente(nombreCliente)
+				.build();
+		
+		Mockito.when(fabricaCita.crear(comandoCitaMock))
 			.thenReturn(citaMock);
 		Mockito.when(servicioCita.agendarCita(citaMock)).thenReturn(citaMock);
 		
-		Cita cita = manejadorCitas.agendarCita(fecha, barbero, corteCabello, corteBarba, lavado, nombreCliente);
+		ComandoCita cita = manejadorCitas.agendarCita(comandoCitaMock);
 		
 		assertNotNull(cita);
-		assertEquals(citaMock, cita);
+		assertEquals(id, cita.getId());
 	}
 }

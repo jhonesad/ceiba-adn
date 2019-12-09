@@ -8,14 +8,14 @@ public class BarberoEntidadTest {
 
 	@Test
 	public void validarGettersSetters() {
-		String codigo = "111";
+		Long id = 1l;
 		String nombre = "nombre";
 		
 		BarberoEntidad barberoEntidad = new BarberoEntidad();
-		barberoEntidad.setCodigo(codigo);
+		barberoEntidad.setId(id);
 		barberoEntidad.setNombre(nombre);
 		
-		assertEquals(codigo, barberoEntidad.getCodigo());
+		assertEquals(id, barberoEntidad.getId());
 		assertEquals(nombre, barberoEntidad.getNombre());
 	}
 }

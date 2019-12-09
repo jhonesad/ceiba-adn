@@ -6,7 +6,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.ceiba.barberia.testdatabuilder.BarberoTestDataBuilder;
+import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
 
 public class CitaTest {
 
@@ -19,14 +19,16 @@ public class CitaTest {
 	
 	@Test
 	public void validarGettersSetters() {
+		Long id = 1l;
 		Date fecha = new Date();
-		Barbero barbero = BarberoTestDataBuilder.aBarberoTestDataBuilder().build();
+		Barbero barbero = BarberoDataBuilder.aBarberoDataBuilder().build();
 		Boolean corteCabello = false;
 		Boolean corteBarba = true;
 		Boolean lavado = false;
 		String nombreCliente = "cliente de prueba";
 		
-		Cita cita = new Cita(new Date(), null, true, false, true, "");
+		Cita cita = new Cita(null, new Date(), null, true, false, true, "");
+		cita.setId(id);
 		cita.setFecha(fecha);
 		cita.setBarbero(barbero);
 		cita.setCorteCabello(corteCabello);
@@ -34,9 +36,10 @@ public class CitaTest {
 		cita.setLavado(lavado);
 		cita.setNombreCliente(nombreCliente);
 		
+		assertEquals(id, cita.getId());
 		assertEquals(fecha, cita.getFecha());
 		assertNotNull(cita.getBarbero());
-		assertEquals(barbero.getCodigo(), cita.getBarbero().getCodigo());
+		assertEquals(barbero.getId(), cita.getBarbero().getId());
 		assertEquals(barbero.getNombre(), cita.getBarbero().getNombre());
 		assertEquals(corteCabello, cita.getCorteCabello());
 		assertEquals(corteBarba, cita.getCorteBarba());

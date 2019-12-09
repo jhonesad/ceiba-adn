@@ -9,10 +9,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.ceiba.barberia.aplicacion.comando.ComandoBarbero;
 import com.ceiba.barberia.aplicacion.fabrica.FabricaBarbero;
 import com.ceiba.barberia.dominio.entidades.Barbero;
 import com.ceiba.barberia.dominio.servicio.ServicioBarbero;
-import com.ceiba.barberia.testdatabuilder.BarberoTestDataBuilder;
+import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
+import com.ceiba.barberia.testdatabuilder.ComandoBarberoDataBuilder;
 
 public class ManejadorBarberosTest {
 
@@ -29,28 +31,38 @@ public class ManejadorBarberosTest {
 	
 	@Test
 	public void listarBarberos() {
-		Barbero barberoMock = BarberoTestDataBuilder.aBarberoTestDataBuilder().build();
+		Barbero barberoMock = BarberoDataBuilder.aBarberoDataBuilder().build();
 		List<Barbero> listaBarberosMock = new ArrayList<Barbero>();
 		listaBarberosMock.add(barberoMock);
 		Mockito.when(servicioBarbero.listar()).thenReturn(listaBarberosMock);
 		
-		List<Barbero> barberos = manejadorBarberos.listar();
+		List<ComandoBarbero> barberos = manejadorBarberos.listar();
 		
 		assertFalse(barberos.isEmpty());
 	}
 	
 	@Test
 	public void crearBarbero() {
-		String codigo = "test1"; 
+		Long id = 4l; 
 		String nombre = "nombre";
-		Barbero barberoMock = new Barbero(codigo, nombre);
-		Mockito.when(fabricaBarbero.barbero(codigo, nombre)).thenReturn(barberoMock);
+		Barbero barberoMock = BarberoDataBuilder.aBarberoDataBuilder()
+				.withId(id)
+				.withNombre(nombre)
+				.build();
+		ComandoBarbero comandoBarberoMock = ComandoBarberoDataBuilder
+				.aComandoBarberoDataBuilder()
+				.withId(null)
+				.withNombre(nombre)
+				.build();
+		
+		Mockito.when(fabricaBarbero.crear(comandoBarberoMock))
+			.thenReturn(barberoMock);
 		Mockito.when(servicioBarbero.crear(barberoMock)).thenReturn(barberoMock);
 		
-		Barbero barbero = manejadorBarberos.crear(codigo, nombre);
+		ComandoBarbero barbero = manejadorBarberos.crear(comandoBarberoMock);
 		
 		assertNotNull(barbero);
-		assertEquals(codigo, barbero.getCodigo());
+		assertEquals(id, barbero.getId());
 		assertEquals(nombre, barbero.getNombre());
 	}
 }

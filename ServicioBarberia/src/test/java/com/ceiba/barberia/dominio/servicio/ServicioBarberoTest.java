@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import com.ceiba.barberia.dominio.entidades.Barbero;
 import com.ceiba.barberia.dominio.puerto.repositorio.RepositorioBarbero;
-import com.ceiba.barberia.testdatabuilder.BarberoTestDataBuilder;
+import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
 
 public class ServicioBarberoTest {
 
@@ -27,7 +27,7 @@ public class ServicioBarberoTest {
 	
 	@Test
 	public void listarBarberos() {
-		Barbero barbero = BarberoTestDataBuilder.aBarberoTestDataBuilder().build();
+		Barbero barbero = BarberoDataBuilder.aBarberoDataBuilder().build();
 		List<Barbero> listaMock = new ArrayList<Barbero>();
 		listaMock.add(barbero);
 		Mockito.when(repositorioBarbero.listar()).thenReturn(listaMock);
@@ -39,12 +39,12 @@ public class ServicioBarberoTest {
 	
 	@Test
 	public void crearBarbero() {
-		Barbero barberoMock = BarberoTestDataBuilder.aBarberoTestDataBuilder().build();
+		Barbero barberoMock = BarberoDataBuilder.aBarberoDataBuilder().build();
 		Mockito.when(repositorioBarbero.crear(barberoMock)).thenReturn(barberoMock);
 		
 		Barbero barbero = servicioBarbero.crear(barberoMock);
 		
 		assertNotNull(barbero);
-		assertEquals(barberoMock.getCodigo(), barbero.getCodigo());
+		assertEquals(barberoMock.getId(), barbero.getId());
 	}
 }
