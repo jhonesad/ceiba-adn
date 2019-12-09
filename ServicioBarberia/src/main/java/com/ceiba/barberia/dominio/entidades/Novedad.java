@@ -32,19 +32,19 @@ public class Novedad {
 	}
 
 	public Date getFechaInicio() {
-		return fechaInicio;
+		return new Date(fechaInicio.getTime());
 	}
 
 	public void setFechaInicio(Date fechaInicio) {
-		this.fechaInicio = fechaInicio;
+		this.fechaInicio = new Date(fechaInicio.getTime());
 	}
 
 	public Date getFechaFin() {
-		return fechaFin;
+		return new Date(fechaFin.getTime());
 	}
 
 	public void setFechaFin(Date fechaFin) {
-		this.fechaFin = fechaFin;
+		this.fechaFin = new Date(fechaFin.getTime());
 	}
 
 	public Barbero getBarbero() {

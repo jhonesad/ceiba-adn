@@ -35,11 +35,11 @@ public class Cita {
 	}
 
 	public Date getFecha() {
-		return fecha;
+		return new Date(fecha.getTime());
 	}
 
 	public void setFecha(Date fecha) {
-		this.fecha = fecha;
+		this.fecha = new Date(fecha.getTime());
 	}
 
 	public Barbero getBarbero() {
