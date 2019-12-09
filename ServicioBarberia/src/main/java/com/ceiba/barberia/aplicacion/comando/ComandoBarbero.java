@@ -1,5 +1,7 @@
 package com.ceiba.barberia.aplicacion.comando;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -9,6 +11,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class ComandoBarbero {
 	
 	private Long id;
+	
+	@NotNull
 	private String nombre;
 	
 	public ComandoBarbero() {

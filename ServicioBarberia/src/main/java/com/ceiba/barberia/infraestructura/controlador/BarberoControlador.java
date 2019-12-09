@@ -2,6 +2,8 @@ package com.ceiba.barberia.infraestructura.controlador;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +24,7 @@ public class BarberoControlador {
 	}
 	
 	@PostMapping("/crear-barbero")
-	public ComandoBarbero crearBarbero(@RequestBody ComandoBarbero barbero) {
+	public ComandoBarbero crearBarbero(@Valid @RequestBody ComandoBarbero barbero) {
 		barbero.setId(null);
 		return this.manejadorBarberos.crear(barbero);
 	}

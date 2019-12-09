@@ -2,6 +2,8 @@ package com.ceiba.barberia.infraestructura.controlador;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +24,7 @@ public class CitaControlador {
 	}
 	
 	@PostMapping("/agendar-cita")
-	public ComandoCita agendarCita(@RequestBody ComandoCita cita) {
+	public ComandoCita agendarCita(@Valid @RequestBody ComandoCita cita) {
 		cita.setId(null);
 		return this.manejadorCitas.agendarCita(cita);
 	}

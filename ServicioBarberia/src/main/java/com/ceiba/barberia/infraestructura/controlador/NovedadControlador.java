@@ -2,6 +2,8 @@ package com.ceiba.barberia.infraestructura.controlador;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +24,7 @@ public class NovedadControlador {
 	}
 	
 	@PostMapping("/crear-novedad")
-	public ComandoNovedad crearNovedad(@RequestBody ComandoNovedad novedad) {	
+	public ComandoNovedad crearNovedad(@Valid @RequestBody ComandoNovedad novedad) {	
 		novedad.setId(null);
 		return manejadorNovedades.crear(novedad);
 	}
