@@ -17,7 +17,6 @@ public class ServicioBarbero {
 	}
 	
 	public Barbero crear(Barbero barbero) {
-		//Realizar validaciones para crear el barbero y guardar o retornar excepcion si no es posible
 		return this.repositorioBarbero.crear(barbero);
 	}
 	

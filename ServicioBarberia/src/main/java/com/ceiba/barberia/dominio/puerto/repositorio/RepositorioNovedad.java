@@ -9,4 +9,6 @@ public interface RepositorioNovedad {
 	Novedad crear(Novedad novedad);
 	
 	List<Novedad> retornar();
+	
+	List<Novedad> listarPorBarbero(Long idBarbero);
 }

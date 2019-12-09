@@ -10,5 +10,5 @@ public interface RepositorioCita {
 	
 	List<Cita> retornar();
 	
-	List<Cita> retornar(String codigoBarbero);
+	List<Cita> retornar(Long idBarbero);
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Cita {
 	
+	private Long id;
 	private Date fecha;
 	private Barbero barbero;
 	private Boolean corteCabello;
@@ -14,14 +15,23 @@ public class Cita {
 	public Cita() {
 	}
 	
-	public Cita(Date fecha, Barbero barbero, Boolean corteCabello, Boolean corteBarba, 
-			Boolean lavado, String nombreCliente) {
+	public Cita(Long id, Date fecha, Barbero barbero, Boolean corteCabello, 
+			Boolean corteBarba, Boolean lavado, String nombreCliente) {
+		this.setId(id);
 		this.setFecha(fecha);
 		this.setBarbero(barbero);
 		this.setCorteCabello(corteCabello);
 		this.setCorteBarba(corteBarba);
 		this.setLavado(lavado);
 		this.setNombreCliente(nombreCliente);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Date getFecha() {

@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Novedad {
 	
+	private Long id;
 	private Date fechaInicio;
 	private Date fechaFin;
 	private Barbero barbero;
@@ -13,7 +14,8 @@ public class Novedad {
 	public Novedad() {
 	}
 	
-	public Novedad(Date fechaInicio, Date fechaFin, Barbero barbero, String descripcion, Boolean festivo) {
+	public Novedad(Long id, Date fechaInicio, Date fechaFin, Barbero barbero, String descripcion, Boolean festivo) {
+		this.setId(id);
 		this.setFechaInicio(fechaInicio);
 		this.setFechaFin(fechaFin);
 		this.setBarbero(barbero);
@@ -21,6 +23,14 @@ public class Novedad {
 		this.setFestivo(festivo);
 	}
 	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public Date getFechaInicio() {
 		return fechaInicio;
 	}
