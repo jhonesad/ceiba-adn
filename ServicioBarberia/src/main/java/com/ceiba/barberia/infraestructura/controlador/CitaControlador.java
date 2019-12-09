@@ -1,16 +1,15 @@
 package com.ceiba.barberia.infraestructura.controlador;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ceiba.barberia.aplicacion.comando.ComandoCita;
 import com.ceiba.barberia.aplicacion.manejador.ManejadorCitas;
-import com.ceiba.barberia.dominio.entidades.Barbero;
-import com.ceiba.barberia.dominio.entidades.Cita;
 
 @RestController
 @RequestMapping(value = "/barberia")
@@ -23,12 +22,13 @@ public class CitaControlador {
 	}
 	
 	@PostMapping("/agendar-cita")
-	public Cita agendarCita() {
-		return this.manejadorCitas.agendarCita(new Date(), new Barbero("001", null), true, true, false, "prueba Jhones");
+	public ComandoCita agendarCita(@RequestBody ComandoCita cita) {
+		cita.setId(null);
+		return this.manejadorCitas.agendarCita(cita);
 	}
 	
 	@GetMapping("/listar-citas")
-	public List<Cita> listarCitas() {
+	public List<ComandoCita> listarCitas() {
 		return this.manejadorCitas.listarCitas(); 
 	}
 }

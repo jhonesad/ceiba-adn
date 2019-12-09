@@ -2,7 +2,10 @@ package com.ceiba.barberia.infraestructura.entidad;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -10,8 +13,10 @@ import javax.persistence.Table;
 public class BarberoEntidad {
 	
 	@Id
-	@Column(name = "CODIGO")
-	private String codigo;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "secuencia_barbero")
+	@SequenceGenerator(name="secuencia_barbero", sequenceName = "BARBERO_SECUENCIA", initialValue=1, allocationSize=100)
+	@Column(name = "ID", updatable = false, nullable = false)
+	private Long id;
 	
 	@Column(name = "NOMBRE", nullable = false)
 	private String nombre;
@@ -19,12 +24,12 @@ public class BarberoEntidad {
 	public BarberoEntidad() {
 	}
 
-	public String getCodigo() {
-		return codigo;
+	public Long getId() {
+		return id;
 	}
 
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getNombre() {

@@ -25,6 +25,7 @@ public class RepositorioBarberoH2 implements RepositorioBarbero {
 	public Barbero crear(Barbero barbero) {
 		BarberoEntidad barberoEntidad = modelMapper.map(barbero, BarberoEntidad.class);
 		barberoRepositorioJPA.save(barberoEntidad);
+		barbero.setId(barberoEntidad.getId());
 		return barbero;
 	}
 
