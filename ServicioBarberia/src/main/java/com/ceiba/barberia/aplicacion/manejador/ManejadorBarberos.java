@@ -33,7 +33,7 @@ public class ManejadorBarberos {
 	
 	public List<ComandoBarbero> listar() {
 		List<Barbero> barberos = servicioBarbero.listar();
-		List<ComandoBarbero> listaBarberos = new ArrayList<ComandoBarbero>();
+		List<ComandoBarbero> listaBarberos = new ArrayList<>();
 		for(Barbero barbero : barberos) {
 			listaBarberos.add(fabricaBarbero.barbero(barbero));
 		}

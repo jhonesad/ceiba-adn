@@ -52,7 +52,7 @@ public class RepositorioCitaH2 implements RepositorioCita {
 	}
 	
 	private List<Cita> retornarListaCitas(List<CitaEntidad> listaCitaEntidad) {
-		List<Cita> listaCitas = new ArrayList<Cita>();
+		List<Cita> listaCitas = new ArrayList<>();
 		for(CitaEntidad citaEntidad : listaCitaEntidad) {
 			listaCitas.add(modelMapper.map(citaEntidad, Cita.class));
 		}

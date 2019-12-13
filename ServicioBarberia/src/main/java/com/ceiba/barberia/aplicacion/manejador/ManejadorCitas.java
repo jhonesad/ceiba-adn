@@ -32,7 +32,7 @@ public class ManejadorCitas {
 	
 	public List<ComandoCita> listarCitas() {
 		List<Cita> citas = servicioCita.listarCitas();
-		List<ComandoCita> listaCitas = new ArrayList<ComandoCita>();
+		List<ComandoCita> listaCitas = new ArrayList<>();
 		for(Cita cita : citas) {
 			listaCitas.add(fabricaCita.cita(cita));
 		}

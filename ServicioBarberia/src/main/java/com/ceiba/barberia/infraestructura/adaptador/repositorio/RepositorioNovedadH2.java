@@ -56,7 +56,7 @@ public class RepositorioNovedadH2 implements RepositorioNovedad {
 	}
 	
 	private List<Novedad> retornarListaNovedades(List<NovedadEntidad> listaNovedadEntidad) {
-		List<Novedad> listaNovedades = new ArrayList<Novedad>();
+		List<Novedad> listaNovedades = new ArrayList<>();
 		for(NovedadEntidad novedadEntidad : listaNovedadEntidad) {
 			listaNovedades.add(modelMapper.map(novedadEntidad, Novedad.class));
 		}

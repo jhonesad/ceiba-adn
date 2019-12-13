@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ceiba.barberia.dominio.entidades.Cita;
 import com.ceiba.barberia.dominio.entidades.Novedad;
+import com.ceiba.barberia.dominio.exception.BarberiaBusinessLogicException;
 import com.ceiba.barberia.dominio.puerto.repositorio.RepositorioCita;
 import com.ceiba.barberia.dominio.puerto.repositorio.RepositorioNovedad;
 
@@ -31,15 +32,15 @@ public class ServicioCita {
 	
 	public Cita agendarCita(Cita cita) {
 		if(barberoTieneNovedadEnFechaCita(cita)) {
-			throw new RuntimeException(ERROR_BARBERO_CON_NOVEDAD_EN_FECHA);
+			throw new BarberiaBusinessLogicException(ERROR_BARBERO_CON_NOVEDAD_EN_FECHA);
 		}
 		
 		if(barberoYaTieneCitaAsignadaEnFechaCita(cita)) {
-			throw new RuntimeException(ERROR_BARBERO_SIN_DOSPINILIDAD_EN_FECHA);
+			throw new BarberiaBusinessLogicException(ERROR_BARBERO_SIN_DOSPINILIDAD_EN_FECHA);
 		}
 		
 		if(esFechaCitaMenorAlMomento(cita)) {
-			throw new RuntimeException(ERROR_FECHA_PASADA);
+			throw new BarberiaBusinessLogicException(ERROR_FECHA_PASADA);
 		}
 		
 		return this.repositorioCita.crear(cita);

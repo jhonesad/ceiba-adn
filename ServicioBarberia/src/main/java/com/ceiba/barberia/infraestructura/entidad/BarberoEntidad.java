@@ -21,9 +21,6 @@ public class BarberoEntidad {
 	@Column(name = "NOMBRE", nullable = false)
 	private String nombre;
 	
-	public BarberoEntidad() {
-	}
-
 	public Long getId() {
 		return id;
 	}

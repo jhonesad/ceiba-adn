@@ -44,9 +44,6 @@ public class CitaEntidad {
 	@Column(name = "NOMBRE_CLIENTE", nullable = false)
 	private String nombreCliente;
 	
-	public CitaEntidad() {
-	}
-	
 	public Long getId() {
 		return id;
 	}

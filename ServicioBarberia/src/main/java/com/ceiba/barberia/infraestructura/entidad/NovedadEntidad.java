@@ -37,9 +37,6 @@ public class NovedadEntidad {
 	
 	@Column(name = "FESTIVO", nullable = false)
 	private Boolean festivo = false;
-	
-	public NovedadEntidad() {
-	}
 
 	public Long getId() {
 		return id;

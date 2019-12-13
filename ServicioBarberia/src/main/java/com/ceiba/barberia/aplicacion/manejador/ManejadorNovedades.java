@@ -43,7 +43,7 @@ public class ManejadorNovedades {
 	}
 	
 	protected List<ComandoNovedad> construirListaNovedades(List<Novedad> novedades) {
-		List<ComandoNovedad> listaNovedades = new ArrayList<ComandoNovedad>();
+		List<ComandoNovedad> listaNovedades = new ArrayList<>();
 		for(Novedad novedad : novedades) {
 			listaNovedades.add(fabricaNovedad.novedad(novedad));
 		}

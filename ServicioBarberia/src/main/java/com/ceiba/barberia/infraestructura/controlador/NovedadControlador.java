@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ceiba.barberia.aplicacion.comando.ComandoNovedad;
 import com.ceiba.barberia.aplicacion.manejador.ManejadorNovedades;
+import com.ceiba.barberia.infraestructura.controlador.exception.BarberiaDataValidationException;
 
 @RestController
 @RequestMapping(value = "/barberia")
@@ -50,7 +51,7 @@ public class NovedadControlador {
 			Date fechaMinima = formatter.parse(strFechaMinima);
 			return this.manejadorNovedades.listarFestivos(fechaMinima);
 		} catch(ParseException ex) {
-			throw new RuntimeException(ERROR_LISTAR_FESTIVOS_PARSE_FECHA);
+			throw new BarberiaDataValidationException(ERROR_LISTAR_FESTIVOS_PARSE_FECHA);
 		}
 		 
 	}

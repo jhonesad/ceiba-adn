@@ -32,7 +32,7 @@ public class RepositorioBarberoH2 implements RepositorioBarbero {
 	@Override
 	public List<Barbero> listar() {
 		List<BarberoEntidad> listaBarberoEntidad = barberoRepositorioJPA.findAll();
-		List<Barbero> listaBarbero = new ArrayList<Barbero>();
+		List<Barbero> listaBarbero = new ArrayList<>();
 		for(BarberoEntidad barberoEntidad : listaBarberoEntidad) {
 			listaBarbero.add(modelMapper.map(barberoEntidad, Barbero.class));
 		}
