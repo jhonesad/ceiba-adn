@@ -4,12 +4,14 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.ceiba.barberia.dominio.entidades.Barbero;
@@ -22,7 +24,7 @@ import com.ceiba.barberia.testdatabuilder.BarberoEntidadDataBuilder;
 public class RepositorioBarberoH2Test {
 
 	@Autowired
-	private TestEntityManager entityManager;
+	private EntityManager entityManager;
 	
 	@Autowired
 	private BarberoRepositorioJPA barberoRepositorioJPA;
@@ -31,7 +33,7 @@ public class RepositorioBarberoH2Test {
 	
 	@Before
 	public void setUp() {
-		repositorioBarberoH2 = new RepositorioBarberoH2(barberoRepositorioJPA); 
+		repositorioBarberoH2 = Mockito.spy(new RepositorioBarberoH2(barberoRepositorioJPA)); 
 	}
 	
 	@Test
@@ -55,5 +57,24 @@ public class RepositorioBarberoH2Test {
 		barbero = repositorioBarberoH2.crear(barbero);
 		
 		assertNotNull(barbero.getId());
+	}
+	
+	@Test
+	public void listarPorNombre() {
+		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("jhon david").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("david alejandro").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("juan camilo").build());
+		
+		Mockito.doReturn(entityManager).when(repositorioBarberoH2).getEntityManager();
+		
+		String nombre = "dav";
+		
+		List<Barbero> barberos = repositorioBarberoH2.listarPorNombre(nombre);
+		
+		assertNotNull(barberos);
+		assertEquals(2, barberos.size());
+		barberos.forEach(barbero -> {
+			assertNotNull(barbero.getId());
+		});
 	}
 }

@@ -9,4 +9,6 @@ public interface RepositorioBarbero {
 	Barbero crear(Barbero barbero);
 	
 	List<Barbero> listar();
+	
+	List<Barbero> listarPorNombre(String nombre);
 }

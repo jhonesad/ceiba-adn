@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 
 import com.ceiba.barberia.dominio.entidades.Cita;
 import com.ceiba.barberia.dominio.entidades.Novedad;
+import com.ceiba.barberia.dominio.exception.BarberiaBusinessLogicException;
 import com.ceiba.barberia.dominio.puerto.repositorio.RepositorioCita;
 import com.ceiba.barberia.dominio.puerto.repositorio.RepositorioNovedad;
 import com.ceiba.barberia.testdatabuilder.CitaDataBuilder;
@@ -71,7 +72,7 @@ public class ServicioCitaTest {
 			servicioCita.agendarCita(citaMock);
 			fail("Deberia retornar excepcion por: " + ServicioCita.ERROR_BARBERO_CON_NOVEDAD_EN_FECHA);
 		} catch(Exception ex) {
-			assertTrue(ex instanceof RuntimeException);
+			assertTrue(ex instanceof BarberiaBusinessLogicException);
 			assertTrue(ex.getMessage().contains(ServicioCita.ERROR_BARBERO_CON_NOVEDAD_EN_FECHA));
 		}
 	}
@@ -86,7 +87,7 @@ public class ServicioCitaTest {
 			servicioCita.agendarCita(citaMock);
 			fail("Deberia retornar excepcion por: " + ServicioCita.ERROR_BARBERO_SIN_DOSPINILIDAD_EN_FECHA);
 		} catch(Exception ex) {
-			assertTrue(ex instanceof RuntimeException);
+			assertTrue(ex instanceof BarberiaBusinessLogicException);
 			assertTrue(ex.getMessage().contains(ServicioCita.ERROR_BARBERO_SIN_DOSPINILIDAD_EN_FECHA));
 		}
 	}
@@ -102,7 +103,7 @@ public class ServicioCitaTest {
 			servicioCita.agendarCita(citaMock);
 			fail("Deberia retornar excepcion por: " + ServicioCita.ERROR_FECHA_PASADA);
 		} catch(Exception ex) {
-			assertTrue(ex instanceof RuntimeException);
+			assertTrue(ex instanceof BarberiaBusinessLogicException);
 			assertTrue(ex.getMessage().contains(ServicioCita.ERROR_FECHA_PASADA));
 		}
 	}
