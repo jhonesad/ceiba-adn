@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -25,12 +26,14 @@ public class ServicioCitaTest {
 	private RepositorioCita repositorioCita;
 	private RepositorioNovedad repositorioNovedad;
 	private ServicioCita servicioCita;
+	private SimpleDateFormat formatter;
 	
 	@Before
 	public void setUp() {
 		repositorioCita = Mockito.mock(RepositorioCita.class);
 		repositorioNovedad = Mockito.mock(RepositorioNovedad.class);
 		servicioCita = Mockito.spy(new ServicioCita(repositorioCita, repositorioNovedad));
+		formatter = new SimpleDateFormat("yyyyMMdd HH:mm");
 	}
 	
 	@Test
@@ -51,6 +54,7 @@ public class ServicioCitaTest {
 		Mockito.when(repositorioCita.crear(citaMock)).thenReturn(citaMock);
 		Mockito.doReturn(false).when(servicioCita).barberoTieneNovedadEnFechaCita(citaMock);
 		Mockito.doReturn(false).when(servicioCita).barberoYaTieneCitaAsignadaEnFechaCita(citaMock);
+		Mockito.doReturn(false).when(servicioCita).esFechaCitaMenorAlMomento(citaMock);
 		
 		Cita cita = servicioCita.agendarCita(citaMock);
 		
@@ -65,7 +69,7 @@ public class ServicioCitaTest {
 		
 		try {
 			servicioCita.agendarCita(citaMock);
-			fail("Deberia retornar excepcion por inhabilidad del barbero en la fecha de la cita");
+			fail("Deberia retornar excepcion por: " + ServicioCita.ERROR_BARBERO_CON_NOVEDAD_EN_FECHA);
 		} catch(Exception ex) {
 			assertTrue(ex instanceof RuntimeException);
 			assertTrue(ex.getMessage().contains(ServicioCita.ERROR_BARBERO_CON_NOVEDAD_EN_FECHA));
@@ -80,10 +84,26 @@ public class ServicioCitaTest {
 		
 		try {
 			servicioCita.agendarCita(citaMock);
-			fail("Deberia retornar excepcion por falta de disponilidad en la fecha de la cita");
+			fail("Deberia retornar excepcion por: " + ServicioCita.ERROR_BARBERO_SIN_DOSPINILIDAD_EN_FECHA);
 		} catch(Exception ex) {
 			assertTrue(ex instanceof RuntimeException);
 			assertTrue(ex.getMessage().contains(ServicioCita.ERROR_BARBERO_SIN_DOSPINILIDAD_EN_FECHA));
+		}
+	}
+	
+	@Test
+	public void agendarCitaConFechaPasada() {
+		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
+		Mockito.doReturn(false).when(servicioCita).barberoTieneNovedadEnFechaCita(citaMock);
+		Mockito.doReturn(false).when(servicioCita).barberoYaTieneCitaAsignadaEnFechaCita(citaMock);
+		Mockito.doReturn(true).when(servicioCita).esFechaCitaMenorAlMomento(citaMock);
+		
+		try {
+			servicioCita.agendarCita(citaMock);
+			fail("Deberia retornar excepcion por: " + ServicioCita.ERROR_FECHA_PASADA);
+		} catch(Exception ex) {
+			assertTrue(ex instanceof RuntimeException);
+			assertTrue(ex.getMessage().contains(ServicioCita.ERROR_FECHA_PASADA));
 		}
 	}
 	
@@ -238,7 +258,6 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void noEsMismaFecha() throws ParseException {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm");
 		Date fecha1 = formatter.parse("20191209 14:00");
 		Date fecha2 = formatter.parse("20191209 14:01");
 		
@@ -249,7 +268,6 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void esFechaEnRango() throws ParseException {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm");
 		Date fecha = formatter.parse("20191209 14:00");
 		Date min = formatter.parse("20191209 00:00");
 		Date max = formatter.parse("20191209 23:59");
@@ -261,7 +279,6 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void esFechaEnRangoMismaMinimaFecha() throws ParseException {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm");
 		Date fecha = formatter.parse("20191209 00:00");
 		Date min = formatter.parse("20191209 00:00");
 		Date max = formatter.parse("20191209 23:59");
@@ -273,7 +290,6 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void esFechaEnRangoMismaMaximaFecha() throws ParseException {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm");
 		Date fecha = formatter.parse("20191209 23:59");
 		Date min = formatter.parse("20191209 00:00");
 		Date max = formatter.parse("20191209 23:59");
@@ -285,7 +301,6 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void esFechaEnRangoFechaMenorAFechaMinima() throws ParseException {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm");
 		Date fecha = formatter.parse("20191208 23:59");
 		Date min = formatter.parse("20191209 00:00");
 		Date max = formatter.parse("20191209 23:59");
@@ -297,12 +312,39 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void esFechaEnRangoFechaMayorAFechaMaxima() throws ParseException {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm");
 		Date fecha = formatter.parse("20191210 00:01");
 		Date min = formatter.parse("20191209 00:00");
 		Date max = formatter.parse("20191209 23:59");
 		
 		boolean validacion = servicioCita.esFechaEnRango(fecha, min, max);
+		
+		assertFalse(validacion);
+	}
+	
+	@Test
+	public void esFechaCitaMenorAlMomento() {
+		Date ahora = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(ahora);
+		cal.add(Calendar.DATE, -1);
+		Date fecha = cal.getTime();
+		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().withFecha(fecha).build();
+		
+		boolean validacion = servicioCita.esFechaCitaMenorAlMomento(citaMock);
+		
+		assertTrue(validacion);
+	}
+	
+	@Test
+	public void laFechaCitaNoEsMenorAlMomento() {
+		Date ahora = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(ahora);
+		cal.add(Calendar.DATE, 1);
+		Date fecha = cal.getTime();
+		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().withFecha(fecha).build();
+		
+		boolean validacion = servicioCita.esFechaCitaMenorAlMomento(citaMock);
 		
 		assertFalse(validacion);
 	}

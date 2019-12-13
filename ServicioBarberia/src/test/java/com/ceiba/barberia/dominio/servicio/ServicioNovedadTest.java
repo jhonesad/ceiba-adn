@@ -3,6 +3,7 @@ package com.ceiba.barberia.dominio.servicio;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -29,7 +30,7 @@ public class ServicioNovedadTest {
 		Novedad novedadMock = NovedadDataBuilder.aNovedadDataBuilder().build();
 		List<Novedad> listaNovedadesMock = new ArrayList<Novedad>();
 		listaNovedadesMock.add(novedadMock);
-		Mockito.when(servicioNovedad.listar()).thenReturn(listaNovedadesMock);
+		Mockito.when(repositorioNovedad.retornar()).thenReturn(listaNovedadesMock);
 		
 		List<Novedad> listaNovedades = servicioNovedad.listar();
 		
@@ -37,9 +38,22 @@ public class ServicioNovedadTest {
 	}
 	
 	@Test
+	public void listarFestivos() {
+		Date fechaMinima = new Date();
+		Novedad novedadMock = NovedadDataBuilder.aNovedadDataBuilder().build();
+		List<Novedad> listaNovedadesMock = new ArrayList<Novedad>();
+		listaNovedadesMock.add(novedadMock);
+		Mockito.when(repositorioNovedad.listarFestivos(fechaMinima)).thenReturn(listaNovedadesMock);
+		
+		List<Novedad> listaNovedades = servicioNovedad.listarFestivos(fechaMinima);
+		
+		assertFalse(listaNovedades.isEmpty());
+	}
+	
+	@Test
 	public void crearNovedad() {
 		Novedad novedadMock = NovedadDataBuilder.aNovedadDataBuilder().build();
-		Mockito.when(servicioNovedad.crear(novedadMock)).thenReturn(novedadMock);
+		Mockito.when(repositorioNovedad.crear(novedadMock)).thenReturn(novedadMock);
 		
 		Novedad novedad = servicioNovedad.crear(novedadMock);
 		
