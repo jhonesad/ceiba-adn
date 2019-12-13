@@ -44,8 +44,7 @@ public class RepositorioCitaH2 implements RepositorioCita {
 
 	@Override
 	public List<Cita> retornar(Long idBarbero) {
-		TypedQuery<CitaEntidad> query = entityManager
-				.createQuery("SELECT c FROM CitaEntidad c WHERE c.barbero.id = :idBarbero", CitaEntidad.class);
+		TypedQuery<CitaEntidad> query = getEntityManager().createQuery("SELECT c FROM CitaEntidad c WHERE c.barbero.id = :idBarbero", CitaEntidad.class);
 		query.setParameter("idBarbero", idBarbero);
 		List<CitaEntidad> listaCitaEntidad = query.getResultList();
 		
@@ -58,5 +57,9 @@ public class RepositorioCitaH2 implements RepositorioCita {
 			listaCitas.add(modelMapper.map(citaEntidad, Cita.class));
 		}
 		return listaCitas;
+	}
+	
+	protected EntityManager getEntityManager() {
+		return this.entityManager;
 	}
 }

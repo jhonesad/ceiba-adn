@@ -1,9 +1,12 @@
 package com.ceiba.barberia.infraestructura.adaptador.repositorio;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
 import org.modelmapper.ModelMapper;
@@ -44,7 +47,7 @@ public class RepositorioNovedadH2 implements RepositorioNovedad {
 	
 	@Override
 	public List<Novedad> listarPorBarbero(Long idBarbero) {
-		TypedQuery<NovedadEntidad> query = entityManager
+		TypedQuery<NovedadEntidad> query = getEntityManager()
 				.createQuery("SELECT n FROM NovedadEntidad n WHERE n.barbero IS NOT NULL AND n.barbero.id = :idBarbero", NovedadEntidad.class);
 		query.setParameter("idBarbero", idBarbero);
 		List<NovedadEntidad> listaNovedadEntidad = query.getResultList();
@@ -58,5 +61,30 @@ public class RepositorioNovedadH2 implements RepositorioNovedad {
 			listaNovedades.add(modelMapper.map(novedadEntidad, Novedad.class));
 		}
 		return listaNovedades;
+	}
+
+	@Override
+	public List<Novedad> listarFestivos(Date fechaMinima) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(fechaMinima);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+	    calendar.set(Calendar.MINUTE, 0);
+	    calendar.set(Calendar.SECOND, 0);
+	    calendar.set(Calendar.MILLISECOND, 0);
+		
+		TypedQuery<NovedadEntidad> query = getEntityManager()
+				.createQuery("SELECT n FROM NovedadEntidad n "
+						+ "WHERE n.festivo = TRUE "
+						+ "AND n.barbero IS NULL "
+						+ "AND n.fechaInicio >= :fechaMinima", NovedadEntidad.class);
+		
+		query.setParameter("fechaMinima", calendar.getTime(), TemporalType.DATE);
+		List<NovedadEntidad> listaNovedadEntidad = query.getResultList();
+		
+		return retornarListaNovedades(listaNovedadEntidad);
+	}
+	
+	protected EntityManager getEntityManager() {
+		return this.entityManager;
 	}
 }

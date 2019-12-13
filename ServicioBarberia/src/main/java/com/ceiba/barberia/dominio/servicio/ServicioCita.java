@@ -18,6 +18,7 @@ public class ServicioCita {
 	
 	protected static final String ERROR_BARBERO_CON_NOVEDAD_EN_FECHA = "El barbero no tiene disponibilidad para la fecha de la cita";
 	protected static final String ERROR_BARBERO_SIN_DOSPINILIDAD_EN_FECHA = "La fecha de la cita ya se encuentra ocupada";
+	protected static final String ERROR_FECHA_PASADA = "La fecha de la cita ya ha pasado";
 	
 	public ServicioCita(RepositorioCita repositorioCita, RepositorioNovedad repositorioNovedad) {
 		this.repositorioCita = repositorioCita;
@@ -29,14 +30,16 @@ public class ServicioCita {
 	}
 	
 	public Cita agendarCita(Cita cita) {
-		boolean tieneNovedadEnFechaCita = barberoTieneNovedadEnFechaCita(cita);
-		if(tieneNovedadEnFechaCita) {
+		if(barberoTieneNovedadEnFechaCita(cita)) {
 			throw new RuntimeException(ERROR_BARBERO_CON_NOVEDAD_EN_FECHA);
 		}
 		
-		boolean tieneCitaAsignadaEnFechaCita = barberoYaTieneCitaAsignadaEnFechaCita(cita);
-		if(tieneCitaAsignadaEnFechaCita) {
+		if(barberoYaTieneCitaAsignadaEnFechaCita(cita)) {
 			throw new RuntimeException(ERROR_BARBERO_SIN_DOSPINILIDAD_EN_FECHA);
+		}
+		
+		if(esFechaCitaMenorAlMomento(cita)) {
+			throw new RuntimeException(ERROR_FECHA_PASADA);
 		}
 		
 		return this.repositorioCita.crear(cita);
@@ -71,6 +74,11 @@ public class ServicioCita {
 		}
 		
 		return tieneCitaAsignadaEnFechaCita;
+	}
+	
+	protected boolean esFechaCitaMenorAlMomento(Cita cita) {
+		Date ahora = new Date();
+		return cita.getFecha().compareTo(ahora) <= 0;
 	}
 	
 	protected boolean listaCitasEsNullaOVacia(List<Cita> listaCitas) {

@@ -1,6 +1,7 @@
 package com.ceiba.barberia.aplicacion.manejador;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -33,6 +34,15 @@ public class ManejadorNovedades {
 	
 	public List<ComandoNovedad> listar() {
 		List<Novedad> novedades = servicioNovedad.listar();
+		return construirListaNovedades(novedades);
+	}
+	
+	public List<ComandoNovedad> listarFestivos(Date fechaMinima) {
+		List<Novedad> novedades = servicioNovedad.listarFestivos(fechaMinima);		
+		return construirListaNovedades(novedades);
+	}
+	
+	protected List<ComandoNovedad> construirListaNovedades(List<Novedad> novedades) {
 		List<ComandoNovedad> listaNovedades = new ArrayList<ComandoNovedad>();
 		for(Novedad novedad : novedades) {
 			listaNovedades.add(fabricaNovedad.novedad(novedad));

@@ -17,6 +17,8 @@ public class ServicioBarbero {
 	}
 	
 	public Barbero crear(Barbero barbero) {
+		//TODO Validaciones
+		//	- que el barbero(nombre) no exista en la BD
 		return this.repositorioBarbero.crear(barbero);
 	}
 	
