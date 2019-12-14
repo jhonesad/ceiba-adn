@@ -84,10 +84,10 @@ public class ServicioNovedad {
 	protected void novedadEnRangoFechaNovedadBarbero(Novedad novedad) {
 		List<Novedad> novedadesBarbero = repositorioNovedad.listarPorBarbero(novedad.getBarbero().getId());
 		
-		boolean esNovedadEnRangoFechaNovedadBarbero = novedadesBarbero.stream().anyMatch((nov) -> {
-			return (novedad.getFechaInicio().compareTo(nov.getFechaInicio()) >= 0 && novedad.getFechaInicio().compareTo(nov.getFechaFin()) <= 0) ||
-					(novedad.getFechaFin().compareTo(nov.getFechaInicio()) >= 0 && novedad.getFechaFin().compareTo(nov.getFechaFin()) <= 0);
-		});
+		boolean esNovedadEnRangoFechaNovedadBarbero = novedadesBarbero.stream().anyMatch(nov -> 
+			(novedad.getFechaInicio().compareTo(nov.getFechaInicio()) >= 0 && novedad.getFechaInicio().compareTo(nov.getFechaFin()) <= 0) ||
+					(novedad.getFechaFin().compareTo(nov.getFechaInicio()) >= 0 && novedad.getFechaFin().compareTo(nov.getFechaFin()) <= 0)
+		);
 		
 		if(esNovedadEnRangoFechaNovedadBarbero)
 			throw new BarberiaBusinessLogicException(ERROR_NOVEDAD_ENTRE_FECHAS_NOVEDADES_BARBERO);
@@ -96,9 +96,9 @@ public class ServicioNovedad {
 	protected void novedadEnRangoFechaCitaBarbero(Novedad novedad) {
 		List<Cita> citasBarbero = repositorioCita.retornar(novedad.getBarbero().getId());
 		
-		boolean esNovedadEnRangoFechaCitaBarbero = citasBarbero.stream().anyMatch((cita) -> {
-			return (cita.getFecha().compareTo(novedad.getFechaInicio()) >= 0 && cita.getFecha().compareTo(novedad.getFechaFin()) <= 0);
-		});
+		boolean esNovedadEnRangoFechaCitaBarbero = citasBarbero.stream().anyMatch(cita -> 
+			(cita.getFecha().compareTo(novedad.getFechaInicio()) >= 0 && cita.getFecha().compareTo(novedad.getFechaFin()) <= 0)
+		);
 		
 		if(esNovedadEnRangoFechaCitaBarbero)
 			throw new BarberiaBusinessLogicException(ERROR_NOVEDAD_ENTRE_FECHAS_CITAS_BARBERO);
