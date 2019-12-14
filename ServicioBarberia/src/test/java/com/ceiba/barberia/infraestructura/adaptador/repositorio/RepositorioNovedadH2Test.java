@@ -3,6 +3,7 @@ package com.ceiba.barberia.infraestructura.adaptador.repositorio;
 import static org.junit.Assert.*;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import com.ceiba.barberia.dominio.entidades.Novedad;
 import com.ceiba.barberia.infraestructura.adaptador.BarberoRepositorioJPA;
 import com.ceiba.barberia.infraestructura.adaptador.NovedadRepositorioJPA;
 import com.ceiba.barberia.infraestructura.entidad.BarberoEntidad;
+import com.ceiba.barberia.infraestructura.entidad.NovedadEntidad;
 import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
 import com.ceiba.barberia.testdatabuilder.BarberoEntidadDataBuilder;
 import com.ceiba.barberia.testdatabuilder.NovedadDataBuilder;
@@ -250,5 +252,57 @@ public class RepositorioNovedadH2Test {
 		
 		assertNotNull(novedades);
 		assertEquals(0, novedades.size());
+	}
+	
+	@Test
+	public void consultarFestivoConFechaFestivo() throws Exception {
+		crearModeloFestivosTest();
+		Date fechaConsulta = new SimpleDateFormat("yyyyMMdd HH:mm:ss").parse("20191225 15:07:45");
+		
+		Mockito.doReturn(entityManager).when(repositorioNovedadH2).getEntityManager();
+		
+		Novedad festivo = repositorioNovedadH2.consultarFestivo(fechaConsulta);
+		
+		assertNotNull(festivo);
+	}
+	
+	@Test
+	public void consultarFestivoNoRegistrado() throws Exception {
+		crearModeloFestivosTest();
+		Date fechaConsulta = new SimpleDateFormat("yyyyMMdd HH:mm:ss").parse("20191220 09:45:03");
+		
+		Mockito.doReturn(entityManager).when(repositorioNovedadH2).getEntityManager();
+		
+		Novedad festivo = repositorioNovedadH2.consultarFestivo(fechaConsulta);
+		
+		assertNull(festivo);
+	}
+	
+	@Test
+	public void listaNovedadIsNull() {
+		boolean validacion = repositorioNovedadH2.listaNovedadIsNullEmpty(null);
+		assertTrue(validacion);
+	}
+	
+	@Test
+	public void listaNovedadIsEmpty() {
+		List<NovedadEntidad> lista = new ArrayList<>();
+		boolean validacion = repositorioNovedadH2.listaNovedadIsNullEmpty(lista);
+		assertTrue(validacion);
+	}
+	
+	@Test
+	public void listaNovedadIsNotNullEmpty() {
+		NovedadEntidad aNovedad = NovedadEntidadDataBuilder.aNovedadDataBuilder()
+				.withId(1l)
+				.withBarbero(null)
+				.withFechaInicio(new Date())
+				.withFechaFin(new Date())
+				.withFestivo(true)
+				.withDescripcion("test").build();
+		List<NovedadEntidad> lista = new ArrayList<>();
+		lista.add(aNovedad);
+		boolean validacion = repositorioNovedadH2.listaNovedadIsNullEmpty(lista);
+		assertFalse(validacion);
 	}
 }

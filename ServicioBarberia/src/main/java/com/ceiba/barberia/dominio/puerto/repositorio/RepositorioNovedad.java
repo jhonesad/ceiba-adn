@@ -14,4 +14,6 @@ public interface RepositorioNovedad {
 	List<Novedad> listarPorBarbero(Long idBarbero);
 	
 	List<Novedad> listarFestivos(Date fechaMinima);
+	
+	Novedad consultarFestivo(Date fechaFestivo);
 }

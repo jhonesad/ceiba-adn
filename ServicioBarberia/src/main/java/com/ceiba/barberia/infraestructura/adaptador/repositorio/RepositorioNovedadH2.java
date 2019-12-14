@@ -48,7 +48,8 @@ public class RepositorioNovedadH2 implements RepositorioNovedad {
 	@Override
 	public List<Novedad> listarPorBarbero(Long idBarbero) {
 		TypedQuery<NovedadEntidad> query = getEntityManager()
-				.createQuery("SELECT n FROM NovedadEntidad n WHERE n.barbero IS NOT NULL AND n.barbero.id = :idBarbero", NovedadEntidad.class);
+				.createQuery("SELECT n FROM NovedadEntidad n WHERE n.festivo = FALSE AND "
+						+ "n.barbero IS NOT NULL AND n.barbero.id = :idBarbero", NovedadEntidad.class);
 		query.setParameter("idBarbero", idBarbero);
 		List<NovedadEntidad> listaNovedadEntidad = query.getResultList();
 		
@@ -65,26 +66,49 @@ public class RepositorioNovedadH2 implements RepositorioNovedad {
 
 	@Override
 	public List<Novedad> listarFestivos(Date fechaMinima) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(fechaMinima);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-	    calendar.set(Calendar.MINUTE, 0);
-	    calendar.set(Calendar.SECOND, 0);
-	    calendar.set(Calendar.MILLISECOND, 0);
-		
 		TypedQuery<NovedadEntidad> query = getEntityManager()
 				.createQuery("SELECT n FROM NovedadEntidad n "
 						+ "WHERE n.festivo = TRUE "
 						+ "AND n.barbero IS NULL "
 						+ "AND n.fechaInicio >= :fechaMinima", NovedadEntidad.class);
 		
-		query.setParameter("fechaMinima", calendar.getTime(), TemporalType.DATE);
+		query.setParameter("fechaMinima", obtenerFechaSinTiempo(fechaMinima), TemporalType.DATE);
 		List<NovedadEntidad> listaNovedadEntidad = query.getResultList();
 		
 		return retornarListaNovedades(listaNovedadEntidad);
 	}
 	
+	@Override
+	public Novedad consultarFestivo(Date fechaFestivo) {		
+		TypedQuery<NovedadEntidad> query = getEntityManager()
+				.createQuery("SELECT n FROM NovedadEntidad n "
+						+ "WHERE n.festivo = TRUE "
+						+ "AND n.barbero IS NULL "
+						+ "AND n.fechaInicio = :fechaInicio", NovedadEntidad.class);
+		
+		query.setParameter("fechaInicio", obtenerFechaSinTiempo(fechaFestivo), TemporalType.DATE);
+
+		List<NovedadEntidad> listaFestivo = query.getResultList();
+		
+		return !listaNovedadIsNullEmpty(listaFestivo) ? modelMapper.map(listaFestivo.get(0), Novedad.class) : null;
+	}
+	
 	protected EntityManager getEntityManager() {
 		return this.entityManager;
+	}
+	
+	protected Date obtenerFechaSinTiempo(Date fecha) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(fecha);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+	    calendar.set(Calendar.MINUTE, 0);
+	    calendar.set(Calendar.SECOND, 0);
+	    calendar.set(Calendar.MILLISECOND, 0);
+	    
+	    return calendar.getTime();
+	}
+	
+	protected boolean listaNovedadIsNullEmpty(List<NovedadEntidad> listaNovedad) {
+		return listaNovedad == null || listaNovedad.isEmpty();
 	}
 }
