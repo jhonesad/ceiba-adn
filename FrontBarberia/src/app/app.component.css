@@ -1,0 +1,16 @@
+.header-barberia {
+    height: 80px;;
+    color: #656565;
+    position: relative;
+    background-size: cover;
+    border-bottom: #45B39D solid;
+    background-color: #fff;
+}
+
+.container-fluid {
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}

@@ -1,0 +1,14 @@
+{
+    "/barberia/*": {
+        "target": "http://localhost:8080",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    },
+    "/prod/Dmservices/*":{
+        "target": "http://app.docm.co",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    }
+}
