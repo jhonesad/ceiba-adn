@@ -33,6 +33,6 @@ public class ServicioBarbero {
 	
 	protected boolean nombreBarberoExisteEnBD(String nombre) {
 		List<Barbero> listaBarberos = repositorioBarbero.listarPorNombre(nombre);
-		return listaBarberos != null;
+		return listaBarberos != null && listaBarberos.size() != 0;
 	}
 }
