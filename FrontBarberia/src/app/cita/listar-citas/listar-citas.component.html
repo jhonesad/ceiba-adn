@@ -1,0 +1,40 @@
+<h2>Citas</h2>
+<form>
+    <div class="form-group row">
+        <!--<label class="col-sm-2 col-form-label" for="filtroNombre">Filtro</label>
+        <div class="col-sm-7">
+            <input type="text" class="form-control" id="inputFiltroNombre" placeholder="Digite el nombre del barbero para filtrar">
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-success" (click)="listarCitas()">Listar</button>
+        </div>-->
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-primary" (click)="cargarAgendarCita()">Agendar Cita</button>
+        </div>
+    </div>
+</form>
+<br />
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Fecha</th>
+                <th scope="col">Barbero</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Corte cabello</th>
+                <th scope="col">Corte barba</th>
+                <th scope="col">Lavado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cita of citas">
+                <td scope="row">{{cita.fecha | date: 'dd-MM-yyyy hh:mm a'}}</td>
+                <td scope="row">{{cita.barbero.nombre}}</td>
+                <td scope="row">{{cita.nombreCliente}}</td>
+                <td scope="row">{{cita.corteCabello == true ? 'Si' : 'No'}}</td>
+                <td scope="row">{{cita.corteBarba == true ? 'Si' : 'No'}}</td>
+                <td scope="row">{{cita.lavado == true ? 'Si' : 'No'}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,65 @@
+
+<h2>Nueva Novedad</h2>
+<form>
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input customized-check" type="checkbox" id="festivo" name="festivo" 
+                [(ngModel)]="novedad.festivo">
+            <label class="form-check-label customized-label-check">Es dia festivo?</label>
+        </div>
+    </div>
+    <div class="form-group row" *ngIf="novedad.festivo == true">
+        <label class="col-sm-1 col-form-label">Fecha</label>
+        <div class="col-sm-11">
+            <input id="fechaFestivo" name="fechaFestivo" theme="dp-material" class="textCssDatePicker"
+                [(ngModel)]="fechaFestivo" [dpDayPicker]="datePickerConfigDate">
+        </div>
+    </div>
+    <div class="form-group row" *ngIf="novedad.festivo == false">
+        <div class="col-md-4">
+            <div class="form-inline">
+                <label>Barbero</label>
+                <div class="input-group containerFechaDiv">
+                    <select class="custom-select" id="barbero" name="barbero" [(ngModel)]="novedad.barbero">
+                        <option *ngFor="let barbero of barberos" [ngValue]="barbero">{{barbero.nombre}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-inline">
+                <label>Fecha inicio</label>
+                <div class="input-group containerFechaDiv">
+                    <input id="fechaInicio" name="fechaInicio" theme="dp-material" class="textCssDatePicker"
+                        [(ngModel)]="fechaInicio" [dpDayPicker]="datePickerConfigDateTime" mode="daytime">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-inline">
+                <label>Fecha Fin</label>
+                <div class="input-group containerFechaDiv">
+                    <input id="fechaFin" name="fechaFin" theme="dp-material" class="textCssDatePicker"
+                        [(ngModel)]="fechaFin" [dpDayPicker]="datePickerConfigDateTime" mode="daytime">
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="form-group">
+        <label>Descripcion</label>
+        <input type="text" class="form-control" id="descripcion" [(ngModel)]="novedad.descripcion" name="descripcion">
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngIf="errorMessage != ''">
+        <span>Ha ocurrido un error:</span><br/><span>{{errorMessage}}</span>
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" (click)="crearNovedad()">Guardar</button>
+        &nbsp;
+        <button type="button" class="btn btn-secondary" (click)="cargarListaNovedades()">Volver</button>
+    </div>     
+</form>
