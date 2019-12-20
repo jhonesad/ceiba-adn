@@ -26,11 +26,11 @@ public class ServicioCita {
 		this.repositorioNovedad = repositorioNovedad;
 	}
 	
-	public List<Cita> listarCitas() {
+	public List<Cita> listar() {
 		return this.repositorioCita.retornar();
 	}
 	
-	public Cita agendarCita(Cita cita) {
+	public Cita agendar(Cita cita) {
 		if(barberoTieneNovedadEnFechaCita(cita)) {
 			throw new BarberiaBusinessLogicException(ERROR_BARBERO_CON_NOVEDAD_EN_FECHA);
 		}

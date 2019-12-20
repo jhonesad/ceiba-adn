@@ -93,7 +93,7 @@ public class RepositorioNovedadH2 implements RepositorioNovedad {
 		return !listaNovedadIsNullEmpty(listaFestivo) ? modelMapper.map(listaFestivo.get(0), Novedad.class) : null;
 	}
 	
-	protected EntityManager getEntityManager() {
+	public EntityManager getEntityManager() {
 		return this.entityManager;
 	}
 	

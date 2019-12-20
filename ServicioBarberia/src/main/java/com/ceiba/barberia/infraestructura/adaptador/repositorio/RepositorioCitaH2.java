@@ -59,7 +59,7 @@ public class RepositorioCitaH2 implements RepositorioCita {
 		return listaCitas;
 	}
 	
-	protected EntityManager getEntityManager() {
+	public EntityManager getEntityManager() {
 		return this.entityManager;
 	}
 }

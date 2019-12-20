@@ -15,32 +15,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ceiba.barberia.aplicacion.comando.ComandoNovedad;
-import com.ceiba.barberia.aplicacion.manejador.ManejadorNovedades;
+import com.ceiba.barberia.aplicacion.manejador.ManejadorCrearNovedad;
+import com.ceiba.barberia.aplicacion.manejador.ManejadorListarFestivos;
+import com.ceiba.barberia.aplicacion.manejador.ManejadorListarNovedades;
 import com.ceiba.barberia.infraestructura.controlador.exception.BarberiaDataValidationException;
 
 @RestController
-@RequestMapping(value = "/barberia")
+@RequestMapping(value = "/api/novedad")
 public class NovedadControlador {
 	
 	protected static final String ERROR_LISTAR_FESTIVOS_PARSE_FECHA = "No fue posible consultar el calendario de dias festivos a partir de la fecha";
 	
-	private final ManejadorNovedades manejadorNovedades;
+	private final ManejadorCrearNovedad manejadorCrearNovedad;
+	private final ManejadorListarNovedades manejadorListarNovedades;
+	private final ManejadorListarFestivos manejadorListarFestivos;
 	
-	public NovedadControlador(ManejadorNovedades manejadorNovedades) {
-		this.manejadorNovedades = manejadorNovedades;
+	public NovedadControlador(ManejadorCrearNovedad manejadorCrearNovedad, 
+			ManejadorListarNovedades manejadorListarNovedades, ManejadorListarFestivos manejadorListarFestivos) {
+		
+		this.manejadorCrearNovedad = manejadorCrearNovedad;
+		this.manejadorListarNovedades = manejadorListarNovedades;
+		this.manejadorListarFestivos = manejadorListarFestivos;
 	}
 	
-	@PostMapping("/crear-novedad")
-	public ComandoNovedad crearNovedad(@Valid @RequestBody ComandoNovedad novedad) {	
+	@PostMapping("/crear")
+	public ComandoNovedad crear(@Valid @RequestBody ComandoNovedad novedad) {	
 		novedad.setId(null);
 		validateAndSetBarberoNuevaNovedad(novedad);
 		
-		return manejadorNovedades.crear(novedad);
+		return manejadorCrearNovedad.ejecutar(novedad);
 	}
 	
-	@GetMapping("/listar-novedades")
-	public List<ComandoNovedad> listarNovedades() {
-		return this.manejadorNovedades.listar(); 
+	@GetMapping("/listar")
+	public List<ComandoNovedad> listar() {
+		return this.manejadorListarNovedades.ejecutar(); 
 	}
 	
 	@GetMapping("/listar-festivos/{FECHA_MINIMA}")
@@ -49,7 +57,7 @@ public class NovedadControlador {
 		
 		try {
 			Date fechaMinima = formatter.parse(strFechaMinima);
-			return this.manejadorNovedades.listarFestivos(fechaMinima);
+			return this.manejadorListarFestivos.ejecutar(fechaMinima);
 		} catch(ParseException ex) {
 			throw new BarberiaDataValidationException(ERROR_LISTAR_FESTIVOS_PARSE_FECHA);
 		}

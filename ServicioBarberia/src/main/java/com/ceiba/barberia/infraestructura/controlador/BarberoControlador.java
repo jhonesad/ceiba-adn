@@ -11,26 +11,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ceiba.barberia.aplicacion.comando.ComandoBarbero;
-import com.ceiba.barberia.aplicacion.manejador.ManejadorBarberos;
+import com.ceiba.barberia.aplicacion.manejador.ManejadorCrearBarbero;
+import com.ceiba.barberia.aplicacion.manejador.ManejadorListarBarberos;
 
 @RestController
-@RequestMapping(value = "/barberia")
+@RequestMapping(value = "/api/barbero")
 public class BarberoControlador {
 	
-	private final ManejadorBarberos manejadorBarberos;
+	private final ManejadorListarBarberos manejadorListarBarberos;
+	private final ManejadorCrearBarbero manejadorCrearBarbero;
 	
-	public BarberoControlador(ManejadorBarberos manejadorBarberos) {
-		this.manejadorBarberos = manejadorBarberos;
+	public BarberoControlador(ManejadorListarBarberos manejadorListarBarberos, ManejadorCrearBarbero manejadorCrearBarbero) {
+		this.manejadorListarBarberos = manejadorListarBarberos;
+		this.manejadorCrearBarbero = manejadorCrearBarbero;
 	}
 	
-	@PostMapping("/crear-barbero")
-	public ComandoBarbero crearBarbero(@Valid @RequestBody ComandoBarbero barbero) {
+	@PostMapping("/crear")
+	public ComandoBarbero crear(@Valid @RequestBody ComandoBarbero barbero) {
 		barbero.setId(null);
-		return this.manejadorBarberos.crear(barbero);
+		return this.manejadorCrearBarbero.ejecutar(barbero);
 	}
 	
-	@GetMapping("/listar-barberos")
-	public List<ComandoBarbero> listarBarberos() {
-		return this.manejadorBarberos.listar();
+	@GetMapping("/listar")
+	public List<ComandoBarbero> listar() {
+		return this.manejadorListarBarberos.ejecutar();
 	}
 }

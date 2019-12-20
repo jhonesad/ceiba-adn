@@ -11,26 +11,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ceiba.barberia.aplicacion.comando.ComandoCita;
-import com.ceiba.barberia.aplicacion.manejador.ManejadorCitas;
+import com.ceiba.barberia.aplicacion.manejador.ManejadorAgendarCita;
+import com.ceiba.barberia.aplicacion.manejador.ManejadorListarCitas;
 
 @RestController
-@RequestMapping(value = "/barberia")
+@RequestMapping(value = "/api/cita")
 public class CitaControlador {
 
-	private final ManejadorCitas manejadorCitas;
+	private final ManejadorListarCitas manejadorListarCitas;
+	private final ManejadorAgendarCita manejadorAgendarCita;
 	
-	public CitaControlador(ManejadorCitas manejadorCitas) {
-		this.manejadorCitas = manejadorCitas;
+	public CitaControlador(ManejadorListarCitas manejadorListarCitas, ManejadorAgendarCita manejadorAgendarCita) {
+		this.manejadorListarCitas = manejadorListarCitas;
+		this.manejadorAgendarCita = manejadorAgendarCita;
 	}
 	
-	@PostMapping("/agendar-cita")
-	public ComandoCita agendarCita(@Valid @RequestBody ComandoCita cita) {
+	@PostMapping("/agendar")
+	public ComandoCita agendar(@Valid @RequestBody ComandoCita cita) {
 		cita.setId(null);
-		return this.manejadorCitas.agendarCita(cita);
+		return this.manejadorAgendarCita.ejecutar(cita);
 	}
 	
-	@GetMapping("/listar-citas")
-	public List<ComandoCita> listarCitas() {
-		return this.manejadorCitas.listarCitas(); 
+	@GetMapping("/listar")
+	public List<ComandoCita> listar() {
+		return this.manejadorListarCitas.ejecutar(); 
 	}
 }

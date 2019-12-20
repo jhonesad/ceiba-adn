@@ -59,7 +59,7 @@ public class RepositorioBarberoH2 implements RepositorioBarbero {
 		return listaBarbero;
 	}
 
-	protected EntityManager getEntityManager() {
+	public EntityManager getEntityManager() {
 		return this.entityManager;
 	}
 }
