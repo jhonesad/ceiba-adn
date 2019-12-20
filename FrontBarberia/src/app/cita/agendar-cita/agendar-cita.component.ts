@@ -68,7 +68,7 @@ export class AgendarCitaComponent implements OnInit {
     }
 
     listarBarberos() {
-        this.barberoService.listarBarberos().subscribe(
+        this.barberoService.listar().subscribe(
             response => {
                 if(response) {
                     response.forEach(r => {
@@ -170,7 +170,7 @@ export class AgendarCitaComponent implements OnInit {
         if(this.validarAgendarCita()) {
             this.cita.fecha = this.hora.fecha;
             console.log(this.cita);
-            this.citaService.agendarCita(this.cita).subscribe(
+            this.citaService.agendar(this.cita).subscribe(
                 response => {
                     if(response) {
                         this.cargarListaCitas();

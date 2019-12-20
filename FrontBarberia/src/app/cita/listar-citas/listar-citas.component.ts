@@ -23,7 +23,7 @@ export class ListarCitasComponent implements OnInit {
      }
 
     listarCitas() {
-        this.citaService.listarCitas().subscribe(
+        this.citaService.listar().subscribe(
             response => {
                 if(response) {
                     this.citas = response;

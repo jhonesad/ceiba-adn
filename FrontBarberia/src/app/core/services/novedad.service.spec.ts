@@ -38,7 +38,7 @@ describe("NovedadService", () => {
             }
         ];
 
-        dataService.listarNovedades().subscribe(response => {
+        dataService.listar().subscribe(response => {
             expect(response.length).toBe(mockNovedades.length);
             expect(response).toEqual(mockNovedades);
         });
@@ -67,7 +67,7 @@ describe("NovedadService", () => {
             descripcion: "test1"
         };
 
-        dataService.crearNovedad(mockNovedadCrear).subscribe(response => {
+        dataService.crear(mockNovedadCrear).subscribe(response => {
             expect(response).toEqual(mockNovedadCreada);
             expect(response.id).not.toBeNull();
             expect(response.id).toEqual(mockNovedadCreada.id);

@@ -21,7 +21,7 @@ export class ListarNovedadesComponent implements OnInit {
     }
 
     listarNovedades() {
-        this.novedadService.listarNovedades().subscribe(
+        this.novedadService.listar().subscribe(
             response => {
                 if(response) {
                     response.forEach(nov => {

@@ -19,7 +19,7 @@ export class ListarBarberosComponent implements OnInit {
   }
 
   listarBarberos() {
-    this.barberoService.listarBarberos().subscribe(
+    this.barberoService.listar().subscribe(
       response => {
         let result = response;
         if(result) {

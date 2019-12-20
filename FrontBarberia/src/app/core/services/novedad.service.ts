@@ -8,18 +8,18 @@ import { Novedad } from '../model/novedad';
 
 export class NovedadService {
 
-    readonly listarNovedadesURL: string = "/barberia/listar-novedades";
-    readonly crearNovedadURL: string = "/barberia/crear-novedad";
-    readonly listarFestivosURL: string = "/barberia/listar-festivos/";
+    readonly listarNovedadesURL: string = "/api/novedad/listar";
+    readonly crearNovedadURL: string = "/api/novedad/crear";
+    readonly listarFestivosURL: string = "/api/novedad/listar-festivos/";
 
     constructor(private http: HttpClient) {
     }
 
-    listarNovedades() {
+    listar() {
         return this.http.get<Novedad[]>(this.listarNovedadesURL);
     }
 
-    crearNovedad(novedad: Novedad) {
+    crear(novedad: Novedad) {
         let headers = new HttpHeaders();
         headers = headers.append('Content-Type', 'application/json');
         return this.http.post<Novedad>(this.crearNovedadURL, JSON.stringify(novedad), { headers: headers });

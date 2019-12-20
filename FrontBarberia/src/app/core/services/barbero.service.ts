@@ -7,17 +7,17 @@ import { Barbero } from '../model/barbero';
 })
 export class BarberoService {
 
-    readonly listarBarberosURL: string = "/barberia/listar-barberos";
-    readonly crearBarberoURL: string = "/barberia/crear-barbero";
+    readonly listarBarberosURL: string = "/api/barbero/listar";
+    readonly crearBarberoURL: string = "/api/barbero/crear";
 
     constructor(private http: HttpClient) {
     }
 
-    listarBarberos() {
+    listar() {
         return this.http.get<Barbero[]>(this.listarBarberosURL);
     }
 
-    crearBarbero(barbero: Barbero) {
+    crear(barbero: Barbero) {
         let headers = new HttpHeaders();
         headers = headers.append('Content-Type', 'application/json');
         return this.http.post<Barbero>(this.crearBarberoURL, JSON.stringify(barbero), { headers: headers })

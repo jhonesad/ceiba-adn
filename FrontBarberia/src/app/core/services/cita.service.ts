@@ -5,16 +5,16 @@ import { Cita } from '../model/cita';
 @Injectable({providedIn: 'root'})
 export class CitaService {
 
-    readonly listarCitasURL: string = "/barberia/listar-citas";
-    readonly agendarCitaURL: string = "/barberia/agendar-cita";
+    readonly listarCitasURL: string = "/api/cita/listar";
+    readonly agendarCitaURL: string = "/api/cita/agendar";
 
     constructor(private httpClient: HttpClient) { }
     
-    listarCitas() {
+    listar() {
         return this.httpClient.get<Cita[]>(this.listarCitasURL);
     }
 
-    agendarCita(cita: Cita) {
+    agendar(cita: Cita) {
         let headers = new HttpHeaders();
         headers = headers.append('Content-Type', 'application/json');
         return this.httpClient.post<Cita>(this.agendarCitaURL, JSON.stringify(cita), { headers: headers });

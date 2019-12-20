@@ -31,7 +31,7 @@ export class CrearBarberoComponent implements OnInit {
         if(this.validador.isNullEmpty(this.barbero.nombre)) {
             this.errorMessage = "El nombre del barbero es obligatorio";
         } else {
-            this.barberoService.crearBarbero(this.barbero).subscribe(
+            this.barberoService.crear(this.barbero).subscribe(
                 response => {
                     if(response) {
                         this.cargarListaBarberos();

@@ -53,7 +53,7 @@ export class CrearNovedadComponent implements OnInit {
         this.barberos = [new Barbero(0, "Seleccionar")];
         this.novedad = new Novedad(null, null, null, this.barberos[0], "", false);
 
-        this.barberoService.listarBarberos().subscribe(
+        this.barberoService.listar().subscribe(
             response => {
                 if(response) {
                     response.forEach(r => {
@@ -77,7 +77,7 @@ export class CrearNovedadComponent implements OnInit {
                 this.novedad.barbero = this.barberos[0];
             }
             
-            this.novedadService.crearNovedad(this.novedad).subscribe(
+            this.novedadService.crear(this.novedad).subscribe(
                 response => {
                     if(response) {
                         this.cargarListaNovedades();

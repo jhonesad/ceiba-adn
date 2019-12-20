@@ -32,7 +32,7 @@ describe('BarberoService', () => {
             { id: 1, nombre: "test 1" }, { id: 2, nombre: "test 2" }
         ];
 
-        dataService.listarBarberos().subscribe(response => {
+        dataService.listar().subscribe(response => {
             expect(response.length).toBe(2);
             expect(response).toEqual(mockBarberos);
         });
@@ -46,7 +46,7 @@ describe('BarberoService', () => {
         const mockBarberoCrear: Barbero = { id: null, nombre: "test 1" };
         const mockBarberoCreado: Barbero = { id: 1, nombre: "test 1" };
 
-        dataService.crearBarbero(mockBarberoCrear).subscribe(response => {
+        dataService.crear(mockBarberoCrear).subscribe(response => {
             expect(response).toEqual(mockBarberoCreado);
             expect(response.id).not.toBeNull();
         });

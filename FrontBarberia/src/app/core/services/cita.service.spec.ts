@@ -38,7 +38,7 @@ describe('CitaService' , () => {
             }
         ];
 
-        dataService.listarCitas().subscribe(response => {
+        dataService.listar().subscribe(response => {
             expect(response.length).toBe(mockCitas.length);
             expect(response).toEqual(mockCitas);
         });
@@ -69,7 +69,7 @@ describe('CitaService' , () => {
             nombreCliente: "test1"
         };
 
-        dataService.agendarCita(mockCitaCrear).subscribe(response => {
+        dataService.agendar(mockCitaCrear).subscribe(response => {
             expect(response).toEqual(mockCitaCreada);
             expect(response.id).not.toBeNull();
         });
