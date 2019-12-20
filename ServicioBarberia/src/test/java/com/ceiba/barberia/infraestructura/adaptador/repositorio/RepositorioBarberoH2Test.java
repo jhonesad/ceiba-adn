@@ -16,8 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.ceiba.barberia.dominio.entidades.Barbero;
 import com.ceiba.barberia.infraestructura.adaptador.BarberoRepositorioJPA;
-import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
-import com.ceiba.barberia.testdatabuilder.BarberoEntidadDataBuilder;
+import com.ceiba.barberia.infraestructura.entidad.BarberoEntidad;
+import com.ceiba.barberia.infraestructura.entidad.BarberoEntidadDataBuilder;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -38,8 +38,10 @@ public class RepositorioBarberoH2Test {
 	
 	@Test
 	public void listar() {
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("test1").build());
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("test2").build());
+		BarberoEntidad barbero1 = BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test1").build();
+		BarberoEntidad barbero2 = BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test1").build();
+		entityManager.persist(barbero1);
+		entityManager.persist(barbero2);
 		
 		List<Barbero> barberos = repositorioBarberoH2.listar();
 		
@@ -48,11 +50,14 @@ public class RepositorioBarberoH2Test {
 		barberos.forEach(barbero -> {
 			assertNotNull(barbero.getId());
 		});
+		
+		assertTrue(barberos.stream().anyMatch(bar -> bar.getNombre().equals(barbero1.getNombre())));
+		assertTrue(barberos.stream().anyMatch(bar -> bar.getNombre().equals(barbero2.getNombre())));
 	}
 	
 	@Test
 	public void crear() {
-		Barbero barbero = BarberoDataBuilder.aBarberoDataBuilder().withId(null).build();
+		Barbero barbero = Barbero.builder().id(null).nombre("test").build();
 		
 		barbero = repositorioBarberoH2.crear(barbero);
 		
@@ -61,9 +66,9 @@ public class RepositorioBarberoH2Test {
 	
 	@Test
 	public void listarPorNombre() {
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("jhon david").build());
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("david alejandro").build());
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("juan camilo").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("jhon david").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("david alejandro").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("juan camilo").build());
 		
 		Mockito.doReturn(entityManager).when(repositorioBarberoH2).getEntityManager();
 		

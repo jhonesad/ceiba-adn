@@ -11,10 +11,6 @@ import com.ceiba.barberia.aplicacion.comando.ComandoBarbero;
 import com.ceiba.barberia.aplicacion.comando.ComandoNovedad;
 import com.ceiba.barberia.dominio.entidades.Barbero;
 import com.ceiba.barberia.dominio.entidades.Novedad;
-import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
-import com.ceiba.barberia.testdatabuilder.ComandoBarberoDataBuilder;
-import com.ceiba.barberia.testdatabuilder.ComandoNovedadDataBuilder;
-import com.ceiba.barberia.testdatabuilder.NovedadDataBuilder;
 
 public class FabricaNovedadTest {
 	
@@ -30,17 +26,17 @@ public class FabricaNovedadTest {
 		Long id = 1L;
 		Date fechaInicio = new Date(); 
 		Date fechaFin = new Date();
-		ComandoBarbero comandoBarbero = ComandoBarberoDataBuilder.aComandoBarberoDataBuilder().build();
+		ComandoBarbero comandoBarbero = ComandoBarbero.builder().id(1l).nombre("test").build(); 
 		String descripcion = "descripcion";
 		Boolean festivo = false;
 		
-		ComandoNovedad comandoNovedad = ComandoNovedadDataBuilder.aComandoNovedadDataBuilder()
-				.withId(id)
-				.withFechaInicio(fechaInicio)
-				.withFechaFin(fechaFin)
-				.withBarbero(comandoBarbero)
-				.withDescripcion(descripcion)
-				.withFestivo(festivo)
+		ComandoNovedad comandoNovedad = ComandoNovedad.builder()
+				.id(id)
+				.fechaInicio(fechaInicio)
+				.fechaFin(fechaFin)
+				.barbero(comandoBarbero)
+				.descripcion(descripcion)
+				.festivo(festivo)
 				.build();
 		
 		Novedad instancia = fabrica.crear(comandoNovedad);
@@ -64,13 +60,13 @@ public class FabricaNovedadTest {
 		String descripcion = "descripcion";
 		Boolean festivo = false;
 		
-		ComandoNovedad comandoNovedad = ComandoNovedadDataBuilder.aComandoNovedadDataBuilder()
-				.withId(id)
-				.withFechaInicio(fechaInicio)
-				.withFechaFin(fechaFin)
-				.withBarbero(null)
-				.withDescripcion(descripcion)
-				.withFestivo(festivo)
+		ComandoNovedad comandoNovedad = ComandoNovedad.builder()
+				.id(id)
+				.fechaInicio(fechaInicio)
+				.fechaFin(fechaFin)
+				.barbero(null)
+				.descripcion(descripcion)
+				.festivo(festivo)
 				.build();
 		
 		Novedad instancia = fabrica.crear(comandoNovedad);
@@ -89,17 +85,17 @@ public class FabricaNovedadTest {
 		Long id = 1L;
 		Date fechaInicio = new Date(); 
 		Date fechaFin = new Date();
-		Barbero barbero = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barbero = Barbero.builder().id(1l).nombre("test").build(); 
 		String descripcion = "descripcion";
 		Boolean festivo = false;
 		
-		Novedad novedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withId(id)
-				.withFechaInicio(fechaInicio)
-				.withFechaFin(fechaFin)
-				.withBarbero(barbero)
-				.withDescripcion(descripcion)
-				.withFestivo(festivo)
+		Novedad novedad = Novedad.builder()
+				.id(id)
+				.fechaInicio(fechaInicio)
+				.fechaFin(fechaFin)
+				.barbero(barbero)
+				.descripcion(descripcion)
+				.festivo(festivo)
 				.build();
 		
 		ComandoNovedad instancia = fabrica.novedad(novedad);
@@ -123,13 +119,13 @@ public class FabricaNovedadTest {
 		String descripcion = "descripcion";
 		Boolean festivo = false;
 		
-		Novedad novedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withId(id)
-				.withFechaInicio(fechaInicio)
-				.withFechaFin(fechaFin)
-				.withBarbero(null)
-				.withDescripcion(descripcion)
-				.withFestivo(festivo)
+		Novedad novedad = Novedad.builder()
+				.id(id)
+				.fechaInicio(fechaInicio)
+				.fechaFin(fechaFin)
+				.barbero(null)
+				.descripcion(descripcion)
+				.festivo(festivo)
 				.build();
 		
 		ComandoNovedad instancia = fabrica.novedad(novedad);

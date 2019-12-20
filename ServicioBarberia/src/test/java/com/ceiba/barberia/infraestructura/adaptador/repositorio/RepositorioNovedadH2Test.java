@@ -22,11 +22,9 @@ import com.ceiba.barberia.dominio.entidades.Novedad;
 import com.ceiba.barberia.infraestructura.adaptador.BarberoRepositorioJPA;
 import com.ceiba.barberia.infraestructura.adaptador.NovedadRepositorioJPA;
 import com.ceiba.barberia.infraestructura.entidad.BarberoEntidad;
+import com.ceiba.barberia.infraestructura.entidad.BarberoEntidadDataBuilder;
 import com.ceiba.barberia.infraestructura.entidad.NovedadEntidad;
-import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
-import com.ceiba.barberia.testdatabuilder.BarberoEntidadDataBuilder;
-import com.ceiba.barberia.testdatabuilder.NovedadDataBuilder;
-import com.ceiba.barberia.testdatabuilder.NovedadEntidadDataBuilder;
+import com.ceiba.barberia.infraestructura.entidad.NovedadEntidadDataBuilder;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -50,20 +48,20 @@ public class RepositorioNovedadH2Test {
 	
 	@Test
 	public void crear() {	
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("test1").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test1").build());
 		BarberoEntidad barberoE = barberoRepositorioJPA.findAll().get(0);
 		
-		Barbero barbero = BarberoDataBuilder.aBarberoDataBuilder()
-				.withId(barberoE.getId())
-				.withNombre(barberoE.getNombre()).build();
+		Barbero barbero = Barbero.builder()
+				.id(barberoE.getId())
+				.nombre(barberoE.getNombre()).build();
 		
-		Novedad novedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withId(null)
-				.withBarbero(barbero)
-				.withFechaInicio(new Date())
-				.withFechaFin(new Date())
-				.withFestivo(false)
-				.withDescripcion("Nueva novedad test1").build();
+		Novedad novedad = Novedad.builder()
+				.id(null)
+				.barbero(barbero)
+				.fechaInicio(new Date())
+				.fechaFin(new Date())
+				.festivo(false)
+				.descripcion("Nueva novedad test1").build();
 				
 		novedad = repositorioNovedadH2.crear(novedad);
 		
@@ -72,10 +70,10 @@ public class RepositorioNovedadH2Test {
 	
 	@Test
 	public void retornar() {
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("test1").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test1").build());
 		BarberoEntidad barberoE = barberoRepositorioJPA.findAll().get(0);
 		
-		entityManager.persist(NovedadEntidadDataBuilder.aNovedadDataBuilder()
+		entityManager.persist(NovedadEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFechaInicio(new Date())
 				.withFechaFin(new Date())
@@ -83,7 +81,7 @@ public class RepositorioNovedadH2Test {
 				.withDescripcion("novedad test1")
 				.withFestivo(false).build());
 		
-		entityManager.persist(NovedadEntidadDataBuilder.aNovedadDataBuilder()
+		entityManager.persist(NovedadEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFechaInicio(new Date())
 				.withFechaFin(new Date())
@@ -104,12 +102,12 @@ public class RepositorioNovedadH2Test {
 	
 	@Test
 	public void listarPorBarbero() {
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("test1").build());
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("test2").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test1").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test2").build());
 		BarberoEntidad barberoE1 = barberoRepositorioJPA.findAll().get(0);
 		BarberoEntidad barberoE2 = barberoRepositorioJPA.findAll().get(1);
 		
-		entityManager.persist(NovedadEntidadDataBuilder.aNovedadDataBuilder()
+		entityManager.persist(NovedadEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFechaInicio(new Date())
 				.withFechaFin(new Date())
@@ -117,7 +115,7 @@ public class RepositorioNovedadH2Test {
 				.withDescripcion("novedad test1")
 				.withFestivo(false).build());
 		
-		entityManager.persist(NovedadEntidadDataBuilder.aNovedadDataBuilder()
+		entityManager.persist(NovedadEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFechaInicio(new Date())
 				.withFechaFin(new Date())
@@ -125,7 +123,7 @@ public class RepositorioNovedadH2Test {
 				.withDescripcion("novedad festivo1")
 				.withFestivo(true).build());
 		
-		entityManager.persist(NovedadEntidadDataBuilder.aNovedadDataBuilder()
+		entityManager.persist(NovedadEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFechaInicio(new Date())
 				.withFechaFin(new Date())
@@ -145,12 +143,12 @@ public class RepositorioNovedadH2Test {
 	}
 	
 	private void crearModeloFestivosTest() throws Exception {
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("test1").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test1").build());
 		BarberoEntidad barberoE1 = barberoRepositorioJPA.findAll().get(0);
 		
 		SimpleDateFormat formatterBD = new SimpleDateFormat("yyyyMMdd HH:mm");
 		
-		entityManager.persist(NovedadEntidadDataBuilder.aNovedadDataBuilder()
+		entityManager.persist(NovedadEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFechaInicio(new Date())
 				.withFechaFin(new Date())
@@ -158,7 +156,7 @@ public class RepositorioNovedadH2Test {
 				.withDescripcion("novedad test1")
 				.withFestivo(false).build());
 		
-		entityManager.persist(NovedadEntidadDataBuilder.aNovedadDataBuilder()
+		entityManager.persist(NovedadEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFechaInicio(formatterBD.parse("20191208 00:00"))
 				.withFechaFin(formatterBD.parse("20191208 23:59"))
@@ -166,7 +164,7 @@ public class RepositorioNovedadH2Test {
 				.withDescripcion("novedad test dia velitas")
 				.withFestivo(true).build());
 		
-		entityManager.persist(NovedadEntidadDataBuilder.aNovedadDataBuilder()
+		entityManager.persist(NovedadEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFechaInicio(formatterBD.parse("20191225 00:00"))
 				.withFechaFin(formatterBD.parse("20191225 23:59"))
@@ -174,7 +172,7 @@ public class RepositorioNovedadH2Test {
 				.withDescripcion("novedad test navidad")
 				.withFestivo(true).build());
 		
-		entityManager.persist(NovedadEntidadDataBuilder.aNovedadDataBuilder()
+		entityManager.persist(NovedadEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFechaInicio(formatterBD.parse("20200101 00:00"))
 				.withFechaFin(formatterBD.parse("20200101 23:59"))
@@ -293,7 +291,7 @@ public class RepositorioNovedadH2Test {
 	
 	@Test
 	public void listaNovedadIsNotNullEmpty() {
-		NovedadEntidad aNovedad = NovedadEntidadDataBuilder.aNovedadDataBuilder()
+		NovedadEntidad aNovedad = NovedadEntidadDataBuilder.aBuilder()
 				.withId(1l)
 				.withBarbero(null)
 				.withFechaInicio(new Date())

@@ -20,10 +20,8 @@ import com.ceiba.barberia.dominio.entidades.Cita;
 import com.ceiba.barberia.infraestructura.adaptador.BarberoRepositorioJPA;
 import com.ceiba.barberia.infraestructura.adaptador.CitaRepositorioJPA;
 import com.ceiba.barberia.infraestructura.entidad.BarberoEntidad;
-import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
-import com.ceiba.barberia.testdatabuilder.BarberoEntidadDataBuilder;
-import com.ceiba.barberia.testdatabuilder.CitaDataBuilder;
-import com.ceiba.barberia.testdatabuilder.CitaEntidadDataBuilder;
+import com.ceiba.barberia.infraestructura.entidad.BarberoEntidadDataBuilder;
+import com.ceiba.barberia.infraestructura.entidad.CitaEntidadDataBuilder;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -47,20 +45,20 @@ public class RepositorioCitaH2Test {
 	
 	@Test
 	public void crear() {
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("test1").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test1").build());
 		BarberoEntidad barberoE = barberoRepositorioJPA.findAll().get(0);
 		
-		Barbero barbero = BarberoDataBuilder.aBarberoDataBuilder()
-				.withId(barberoE.getId())
-				.withNombre(barberoE.getNombre()).build();
+		Barbero barbero = Barbero.builder()
+				.id(barberoE.getId())
+				.nombre(barberoE.getNombre()).build();
 		
-		Cita cita = CitaDataBuilder.aCitaDataBuilder().withId(null)
-				.withFecha(new Date())
-				.withBarbero(barbero)
-				.withCorteCabello(true)
-				.withCorteBarba(true)
-				.withLavado(true)
-				.withNombreCliente("Cliente test1").build();
+		Cita cita = Cita.builder().id(null)
+				.fecha(new Date())
+				.barbero(barbero)
+				.corteCabello(true)
+				.corteBarba(true)
+				.lavado(true)
+				.nombreCliente("Cliente test1").build();
 		
 		cita = repositorioCitaH2.crear(cita);
 		
@@ -69,10 +67,10 @@ public class RepositorioCitaH2Test {
 	
 	@Test
 	public void retornar() {
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("test1").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test1").build());
 		BarberoEntidad barberoE = barberoRepositorioJPA.findAll().get(0);
 		
-		entityManager.persist(CitaEntidadDataBuilder.aCitaDataBuilder()
+		entityManager.persist(CitaEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFecha(new Date())
 				.withBarbero(barberoE)
@@ -81,7 +79,7 @@ public class RepositorioCitaH2Test {
 				.withLavado(true)
 				.withNombreCliente("Cliente test1").build());
 		
-		entityManager.persist(CitaEntidadDataBuilder.aCitaDataBuilder()
+		entityManager.persist(CitaEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFecha(new Date())
 				.withBarbero(barberoE)
@@ -103,12 +101,12 @@ public class RepositorioCitaH2Test {
 	
 	@Test
 	public void retornarCitasBarbero() {
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("test1").build());
-		entityManager.persist(BarberoEntidadDataBuilder.aBarberoDataBuilder().withId(null).withNombre("test2").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test1").build());
+		entityManager.persist(BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test2").build());
 		BarberoEntidad barberoE1 = barberoRepositorioJPA.findAll().get(0);
 		BarberoEntidad barberoE2 = barberoRepositorioJPA.findAll().get(1);
 		
-		entityManager.persist(CitaEntidadDataBuilder.aCitaDataBuilder()
+		entityManager.persist(CitaEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFecha(new Date())
 				.withBarbero(barberoE1)
@@ -117,7 +115,7 @@ public class RepositorioCitaH2Test {
 				.withLavado(true)
 				.withNombreCliente("Cliente test1").build());
 		
-		entityManager.persist(CitaEntidadDataBuilder.aCitaDataBuilder()
+		entityManager.persist(CitaEntidadDataBuilder.aBuilder()
 				.withId(null)
 				.withFecha(new Date())
 				.withBarbero(barberoE2)

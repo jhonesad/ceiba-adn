@@ -11,10 +11,6 @@ import com.ceiba.barberia.aplicacion.comando.ComandoBarbero;
 import com.ceiba.barberia.aplicacion.comando.ComandoCita;
 import com.ceiba.barberia.dominio.entidades.Barbero;
 import com.ceiba.barberia.dominio.entidades.Cita;
-import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
-import com.ceiba.barberia.testdatabuilder.CitaDataBuilder;
-import com.ceiba.barberia.testdatabuilder.ComandoBarberoDataBuilder;
-import com.ceiba.barberia.testdatabuilder.ComandoCitaDataBuilder;
 
 public class FabricaCitaTest {
 	
@@ -29,20 +25,20 @@ public class FabricaCitaTest {
 	public void validarCrearCitaDominio() {
 		Long id = 3l;
 		Date fecha = new Date(); 
-		ComandoBarbero comandoBarbero = ComandoBarberoDataBuilder.aComandoBarberoDataBuilder().build(); 
+		ComandoBarbero comandoBarbero = ComandoBarbero.builder().id(1l).nombre("test").build(); 
 		Boolean corteCabello = true;
 		Boolean corteBarba = true;
 		Boolean lavado = true;
 		String nombreCliente = "cliente";
 		
-		ComandoCita comandoCita = ComandoCitaDataBuilder.aComandoCitaDataBuilder()
-				.withId(id)
-				.withFecha(fecha)
-				.withBarbero(comandoBarbero)
-				.withCorteCabello(corteCabello)
-				.withCorteBarba(corteBarba)
-				.withLavado(lavado)
-				.withNombreCliente(nombreCliente)
+		ComandoCita comandoCita = ComandoCita.builder()
+				.id(id)
+				.fecha(fecha)
+				.barbero(comandoBarbero)
+				.corteCabello(corteCabello)
+				.corteBarba(corteBarba)
+				.lavado(lavado)
+				.nombreCliente(nombreCliente)
 				.build();
 		
 		Cita instancia = fabrica.crear(comandoCita);
@@ -63,20 +59,20 @@ public class FabricaCitaTest {
 	public void validarCrearComandoCita() {
 		Long id = 3l;
 		Date fecha = new Date(); 
-		Barbero barbero = BarberoDataBuilder.aBarberoDataBuilder().build(); 
+		Barbero barbero = Barbero.builder().id(1l).nombre("test").build(); 
 		Boolean corteCabello = true;
 		Boolean corteBarba = true;
 		Boolean lavado = true;
 		String nombreCliente = "cliente";
 		
-		Cita cita = CitaDataBuilder.aCitaDataBuilder()
-				.withId(id)
-				.withFecha(fecha)
-				.withBarbero(barbero)
-				.withCorteCabello(corteCabello)
-				.withCorteBarba(corteBarba)
-				.withLavado(lavado)
-				.withNombreCliente(nombreCliente)
+		Cita cita = Cita.builder()
+				.id(id)
+				.fecha(fecha)
+				.barbero(barbero)
+				.corteCabello(corteCabello)
+				.corteBarba(corteBarba)
+				.lavado(lavado)
+				.nombreCliente(nombreCliente)
 				.build();
 		
 		ComandoCita instancia = fabrica.cita(cita);

@@ -1,4 +1,4 @@
-package com.ceiba.barberia.testdatabuilder;
+package com.ceiba.barberia.infraestructura.entidad;
 
 import java.util.Date;
 
@@ -59,7 +59,7 @@ public class NovedadEntidadDataBuilder {
 		return novedad;
 	}
 	
-	public static NovedadEntidadDataBuilder aNovedadDataBuilder() {
+	public static NovedadEntidadDataBuilder aBuilder() {
 		return new NovedadEntidadDataBuilder();
 	}
 }

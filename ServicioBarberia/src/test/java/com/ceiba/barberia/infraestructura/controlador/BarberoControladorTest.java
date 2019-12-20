@@ -2,67 +2,121 @@ package com.ceiba.barberia.infraestructura.controlador;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.ceiba.barberia.aplicacion.comando.ComandoBarbero;
-import com.ceiba.barberia.aplicacion.manejador.ManejadorBarberos;
-import com.ceiba.barberia.testdatabuilder.ComandoBarberoDataBuilder;
+import com.ceiba.barberia.aplicacion.fabrica.FabricaBarbero;
+import com.ceiba.barberia.aplicacion.manejador.ManejadorCrearBarbero;
+import com.ceiba.barberia.aplicacion.manejador.ManejadorListarBarberos;
+import com.ceiba.barberia.dominio.entidades.Barbero;
+import com.ceiba.barberia.dominio.servicio.ServicioBarbero;
+import com.ceiba.barberia.infraestructura.adaptador.BarberoRepositorioJPA;
+import com.ceiba.barberia.infraestructura.adaptador.repositorio.RepositorioBarberoH2;
+import com.ceiba.barberia.infraestructura.entidad.BarberoEntidad;
+import com.ceiba.barberia.infraestructura.entidad.BarberoEntidadDataBuilder;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
+@RunWith(SpringRunner.class)
+@DataJpaTest
 public class BarberoControladorTest extends ControladorText {
 	
-	BarberoControlador barberoControlador;
+	private BarberoControlador barberoControlador;
 	
-	@Mock
-	ManejadorBarberos manejadorBarberos;
+	@Autowired
+	private EntityManager entityManager;
+	
+	@Autowired
+	private BarberoRepositorioJPA barberoRepositorioJPA;
+	
+	private RepositorioBarberoH2 repositorioBarberoH2;
+	private ServicioBarbero servicioBarbero;
+	private FabricaBarbero fabricaBarbero;
+	private ManejadorListarBarberos manejadorListarBarberos;
+	private ManejadorCrearBarbero manejadorCrearBarbero;
+	private ObjectMapper mapper = new ObjectMapper();
 	
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-		barberoControlador = new BarberoControlador(manejadorBarberos);
+		repositorioBarberoH2 = Mockito.spy(new RepositorioBarberoH2(barberoRepositorioJPA)); 
+		fabricaBarbero = Mockito.spy(new FabricaBarbero());
+		servicioBarbero = Mockito.spy(new ServicioBarbero(repositorioBarberoH2));
+		manejadorListarBarberos = Mockito.spy(new ManejadorListarBarberos(servicioBarbero, fabricaBarbero));
+		manejadorCrearBarbero = Mockito.spy(new ManejadorCrearBarbero(servicioBarbero, fabricaBarbero));
+		
+		barberoControlador = new BarberoControlador(manejadorListarBarberos, manejadorCrearBarbero);
 		mockMvc = MockMvcBuilders.standaloneSetup(barberoControlador).build();
 	}
 	
 	@Test
-	public void crearBarbero() throws Exception {
-		Long id = 99l;
-		ComandoBarbero barberoMock = ComandoBarberoDataBuilder.aComandoBarberoDataBuilder().withId(id).build();
-		Mockito.when(manejadorBarberos.crear(Mockito.any(ComandoBarbero.class))).thenReturn(barberoMock);
+	public void listarBarberos() throws Exception {
+		BarberoEntidad barbero1 = BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test barbero 1").build();
+		BarberoEntidad barbero2 = BarberoEntidadDataBuilder.aBuilder().withId(null).withNombre("test barbero 2").build();
+		entityManager.persist(barbero1);
+		entityManager.persist(barbero2);
 		
-		mockMvc.perform(post("/barberia/crear-barbero")
+		MvcResult result = mockMvc.perform(get("/api/barbero/listar")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$", hasSize(2)))
+			.andReturn();
+		
+		Mockito.verify(manejadorListarBarberos, Mockito.times(1)).ejecutar();
+		Mockito.verify(servicioBarbero, Mockito.times(1)).listar();
+		Mockito.verify(repositorioBarberoH2, Mockito.times(1)).listar();
+		Mockito.verify(fabricaBarbero, Mockito.times(2)).barbero(Mockito.any(Barbero.class));
+		
+		List<ComandoBarbero> barberos = Arrays.asList(mapper.readValue(result.getResponse().getContentAsString(), ComandoBarbero[].class));
+		barberos.forEach(bar -> {
+			assertNotNull(bar.getId());
+		});
+		assertTrue(barberos.stream().anyMatch(bar -> barbero1.getNombre().equals(bar.getNombre())));
+		assertTrue(barberos.stream().anyMatch(bar -> barbero2.getNombre().equals(bar.getNombre())));
+	}
+	
+	@Test
+	public void crearBarbero() throws Exception {
+		String nombreBarbero = "Jhones Test";
+		ComandoBarbero barberoMock = ComandoBarbero.builder().id(0l).nombre(nombreBarbero).build();
+		Mockito.doReturn(entityManager).when(repositorioBarberoH2).getEntityManager();
+		
+		MvcResult result = mockMvc.perform(post("/api/barbero/crear")
 				.content(asJsonString(barberoMock))
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$.id").value(id));
+			.andReturn();
 		
-		Mockito.verify(manejadorBarberos, Mockito.times(1)).crear(Mockito.any(ComandoBarbero.class));
-	}
-	
-	@Test
-	public void listarBarberos() throws Exception {
-		ComandoBarbero barberoMock = ComandoBarberoDataBuilder.aComandoBarberoDataBuilder().build();
-		List<ComandoBarbero> listaBarberosMock = new ArrayList<ComandoBarbero>();
-		listaBarberosMock.add(barberoMock);
-		Mockito.when(manejadorBarberos.listar()).thenReturn(listaBarberosMock);
+		Mockito.verify(manejadorCrearBarbero, Mockito.times(1)).ejecutar(Mockito.any(ComandoBarbero.class));
+		Mockito.verify(fabricaBarbero, Mockito.times(1)).crear(Mockito.any(ComandoBarbero.class));
+		Mockito.verify(servicioBarbero, Mockito.times(1)).crear(Mockito.any(Barbero.class));
+		Mockito.verify(repositorioBarberoH2, Mockito.times(1)).listarPorNombre(nombreBarbero);
+		Mockito.verify(repositorioBarberoH2, Mockito.times(1)).crear(Mockito.any(Barbero.class));
 		
-		mockMvc.perform(get("/barberia/listar-barberos")
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$", hasSize(listaBarberosMock.size())));
+		ComandoBarbero barbero = mapper.readValue(result.getResponse().getContentAsString(), ComandoBarbero.class);
+		assertNotNull(barbero.getId());
 		
-		Mockito.verify(manejadorBarberos, Mockito.times(1)).listar();
+		List<BarberoEntidad> barberosBD = barberoRepositorioJPA.findAll();
+		assertNotNull(barberosBD);
+		assertEquals(1, barberosBD.size());
+		assertEquals(barbero.getId(), barberosBD.get(0).getId());
+		assertEquals(nombreBarbero, barberosBD.get(0).getNombre());
 	}
 }

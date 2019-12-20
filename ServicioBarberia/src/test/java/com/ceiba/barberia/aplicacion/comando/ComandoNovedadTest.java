@@ -6,8 +6,6 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.ceiba.barberia.testdatabuilder.ComandoBarberoDataBuilder;
-
 public class ComandoNovedadTest {
 
 	@Test
@@ -22,7 +20,7 @@ public class ComandoNovedadTest {
 		Long id = 1l;
 		Date fechaInicio = new Date();
 		Date fechaFin = new Date();
-		ComandoBarbero barbero = ComandoBarberoDataBuilder.aComandoBarberoDataBuilder().build();
+		ComandoBarbero barbero = ComandoBarbero.builder().id(1l).nombre("test").build();
 		String descripcion = "descripcion prueba";
 		Boolean festivo = true;
 		

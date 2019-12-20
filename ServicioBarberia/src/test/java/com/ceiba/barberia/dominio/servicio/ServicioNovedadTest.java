@@ -18,9 +18,6 @@ import com.ceiba.barberia.dominio.entidades.Novedad;
 import com.ceiba.barberia.dominio.exception.BarberiaBusinessLogicException;
 import com.ceiba.barberia.dominio.puerto.repositorio.RepositorioCita;
 import com.ceiba.barberia.dominio.puerto.repositorio.RepositorioNovedad;
-import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
-import com.ceiba.barberia.testdatabuilder.CitaDataBuilder;
-import com.ceiba.barberia.testdatabuilder.NovedadDataBuilder;
 
 public class ServicioNovedadTest {
 
@@ -41,7 +38,7 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void listarNovedades() {
-		Novedad novedadMock = NovedadDataBuilder.aNovedadDataBuilder().build();
+		Novedad novedadMock = Novedad.builder().barbero(Barbero.builder().build()).build();
 		List<Novedad> listaNovedadesMock = new ArrayList<Novedad>();
 		listaNovedadesMock.add(novedadMock);
 		Mockito.when(repositorioNovedad.retornar()).thenReturn(listaNovedadesMock);
@@ -54,7 +51,7 @@ public class ServicioNovedadTest {
 	@Test
 	public void listarFestivos() {
 		Date fechaMinima = new Date();
-		Novedad novedadMock = NovedadDataBuilder.aNovedadDataBuilder().build();
+		Novedad novedadMock = Novedad.builder().build();
 		List<Novedad> listaNovedadesMock = new ArrayList<Novedad>();
 		listaNovedadesMock.add(novedadMock);
 		Mockito.when(repositorioNovedad.listarFestivos(fechaMinima)).thenReturn(listaNovedadesMock);
@@ -66,7 +63,7 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void crearNovedad() {
-		Novedad novedadMock = NovedadDataBuilder.aNovedadDataBuilder().build();
+		Novedad novedadMock = Novedad.builder().barbero(Barbero.builder().build()).build();
 		Mockito.when(repositorioNovedad.crear(novedadMock)).thenReturn(novedadMock);
 		Mockito.doNothing().when(servicioNovedad).validarYPrepararNovedad(novedadMock);
 		
@@ -78,13 +75,13 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void validarYPrepararNovedadFestivo() {
-		Novedad novedadMock = NovedadDataBuilder.aNovedadDataBuilder()
-				.withId(null)
-				.withBarbero(null)
-				.withFechaInicio(new Date())
-				.withFechaFin(new Date())
-				.withFestivo(true)
-				.withDescripcion("test").build();
+		Novedad novedadMock = Novedad.builder()
+				.id(null)
+				.barbero(null)
+				.fechaInicio(new Date())
+				.fechaFin(new Date())
+				.festivo(true)
+				.descripcion("test").build();
 		
 		Mockito.doNothing().when(servicioNovedad).inicioYFinFestivoNoEsMismaFecha(novedadMock.getFechaInicio(), novedadMock.getFechaFin());
 		Mockito.doNothing().when(servicioNovedad).setTiempoFestivo(novedadMock);
@@ -107,17 +104,17 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void validarYPrepararNovedadBarbero() {
-		Barbero barberoMock = BarberoDataBuilder.aBarberoDataBuilder()
-				.withId(1l)
-				.withNombre("barbero test").build();
+		Barbero barberoMock = Barbero.builder()
+				.id(1l)
+				.nombre("barbero test").build();
 		
-		Novedad novedadMock = NovedadDataBuilder.aNovedadDataBuilder()
-				.withId(null)
-				.withBarbero(barberoMock)
-				.withFechaInicio(new Date())
-				.withFechaFin(new Date())
-				.withFestivo(false)
-				.withDescripcion("test").build();
+		Novedad novedadMock = Novedad.builder()
+				.id(null)
+				.barbero(barberoMock)
+				.fechaInicio(new Date())
+				.fechaFin(new Date())
+				.festivo(false)
+				.descripcion("test").build();
 		
 		Mockito.doNothing().when(servicioNovedad).esFechaMenorAlMomento(novedadMock.getFechaInicio(), true, ServicioNovedad.ERROR_FECHA_INICIO_PASADA);
 		Mockito.doNothing().when(servicioNovedad).esFechaMenorAlMomento(novedadMock.getFechaFin(), true, ServicioNovedad.ERROR_FECHA_FIN_PASADA);
@@ -211,7 +208,7 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void festivoDuplicado() {
-		Novedad festivo = NovedadDataBuilder.aNovedadDataBuilder().build();
+		Novedad festivo = Novedad.builder().build();
 		Date fechaFestivo = new Date();
 		Mockito.when(repositorioNovedad.consultarFestivo(fechaFestivo)).thenReturn(festivo);
 		
@@ -239,9 +236,9 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void setTiempoFestivo() {
-		Novedad festivo = Mockito.spy(NovedadDataBuilder.aNovedadDataBuilder()
-				.withFechaInicio(new Date())
-				.withFechaFin(new Date()).build());
+		Novedad festivo = Mockito.spy(Novedad.builder()
+				.fechaInicio(new Date())
+				.fechaFin(new Date()).build());
 		
 		servicioNovedad.setTiempoFestivo(festivo);
 		
@@ -265,21 +262,21 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaNovedadBarbero_FInicioEntreFechasNovedad() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 12:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 16:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 12:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 16:00")).build();
 		
-		Novedad novedad1 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 08:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
-		Novedad novedad2 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 11:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
+		Novedad novedad1 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 08:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
+		Novedad novedad2 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 11:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
 		List<Novedad> novedadesBarbero = new ArrayList<>();
 		novedadesBarbero.add(novedad1);
 		novedadesBarbero.add(novedad2);
@@ -297,21 +294,21 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaNovedadBarbero_FInicioIgualAFechaInicioNovedad() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 11:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 16:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 11:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 16:00")).build();
 		
-		Novedad novedad1 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 08:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
-		Novedad novedad2 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 11:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
+		Novedad novedad1 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 08:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
+		Novedad novedad2 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 11:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
 		List<Novedad> novedadesBarbero = new ArrayList<>();
 		novedadesBarbero.add(novedad1);
 		novedadesBarbero.add(novedad2);
@@ -329,21 +326,21 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaNovedadBarbero_FInicioIgualAFechaFinNovedad() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 13:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 16:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 13:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 16:00")).build();
 		
-		Novedad novedad1 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 08:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
-		Novedad novedad2 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 11:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
+		Novedad novedad1 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 08:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
+		Novedad novedad2 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 11:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
 		List<Novedad> novedadesBarbero = new ArrayList<>();
 		novedadesBarbero.add(novedad1);
 		novedadesBarbero.add(novedad2);
@@ -361,21 +358,21 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaNovedadBarbero_FFinEntreFechasNovedad() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 09:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 12:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 09:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 12:00")).build();
 		
-		Novedad novedad1 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 08:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
-		Novedad novedad2 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 11:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
+		Novedad novedad1 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 08:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
+		Novedad novedad2 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 11:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
 		List<Novedad> novedadesBarbero = new ArrayList<>();
 		novedadesBarbero.add(novedad1);
 		novedadesBarbero.add(novedad2);
@@ -393,21 +390,21 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaNovedadBarbero_FFinIgualAFechaInicioNovedad() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 09:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 11:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 09:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 11:00")).build();
 		
-		Novedad novedad1 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 08:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
-		Novedad novedad2 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 11:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
+		Novedad novedad1 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 08:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
+		Novedad novedad2 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 11:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
 		List<Novedad> novedadesBarbero = new ArrayList<>();
 		novedadesBarbero.add(novedad1);
 		novedadesBarbero.add(novedad2);
@@ -425,21 +422,21 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaNovedadBarbero_FFinIgualAFechaFinNovedad() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 09:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 09:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
 		
-		Novedad novedad1 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 08:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
-		Novedad novedad2 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 11:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
+		Novedad novedad1 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 08:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
+		Novedad novedad2 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 11:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
 		List<Novedad> novedadesBarbero = new ArrayList<>();
 		novedadesBarbero.add(novedad1);
 		novedadesBarbero.add(novedad2);
@@ -457,21 +454,21 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaNovedadBarbero_CubreRangoFechasNovedad() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 09:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 09:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
 		
-		Novedad novedad1 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 08:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
-		Novedad novedad2 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 11:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
+		Novedad novedad1 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 08:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
+		Novedad novedad2 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 11:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
 		List<Novedad> novedadesBarbero = new ArrayList<>();
 		novedadesBarbero.add(novedad1);
 		novedadesBarbero.add(novedad2);
@@ -489,21 +486,21 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaNovedadBarbero_FueraDeRangoFechasNovedades() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 13:01"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 13:01"))
+				.fechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
 		
-		Novedad novedad1 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 08:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
-		Novedad novedad2 = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 11:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
+		Novedad novedad1 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 08:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 10:00")).build();
+		Novedad novedad2 = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 11:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 13:00")).build();
 		List<Novedad> novedadesBarbero = new ArrayList<>();
 		novedadesBarbero.add(novedad1);
 		novedadesBarbero.add(novedad2);
@@ -520,12 +517,12 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaNovedadBarbero_BarberoSinNovedades() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 13:01"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 13:01"))
+				.fechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
 		
 		List<Novedad> novedadesBarbero = new ArrayList<>();
 		Mockito.when(repositorioNovedad.listarPorBarbero(barberoNovedad.getId())).thenReturn(novedadesBarbero);
@@ -540,19 +537,19 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaCitaBarbero_CitaEntreFechasNovedad() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 13:01"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 13:01"))
+				.fechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
 		
-		Cita cita1 = CitaDataBuilder.aCitaDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFecha(dateTimeFormatter.parse("20191214 10:00")).build();
-		Cita cita2 = CitaDataBuilder.aCitaDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFecha(dateTimeFormatter.parse("20191214 13:30")).build();
+		Cita cita1 = Cita.builder()
+				.barbero(barberoNovedad)
+				.fecha(dateTimeFormatter.parse("20191214 10:00")).build();
+		Cita cita2 = Cita.builder()
+				.barbero(barberoNovedad)
+				.fecha(dateTimeFormatter.parse("20191214 13:30")).build();
 		List<Cita> citasBarbero = new ArrayList<>();
 		citasBarbero.add(cita1);
 		citasBarbero.add(cita2);
@@ -570,19 +567,19 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaCitaBarbero_FCitaIgualFinicioNovedad() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 13:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 13:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
 		
-		Cita cita1 = CitaDataBuilder.aCitaDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFecha(dateTimeFormatter.parse("20191214 10:00")).build();
-		Cita cita2 = CitaDataBuilder.aCitaDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFecha(dateTimeFormatter.parse("20191214 13:00")).build();
+		Cita cita1 = Cita.builder()
+				.barbero(barberoNovedad)
+				.fecha(dateTimeFormatter.parse("20191214 10:00")).build();
+		Cita cita2 = Cita.builder()
+				.barbero(barberoNovedad)
+				.fecha(dateTimeFormatter.parse("20191214 13:00")).build();
 		List<Cita> citasBarbero = new ArrayList<>();
 		citasBarbero.add(cita1);
 		citasBarbero.add(cita2);
@@ -600,19 +597,19 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaCitaBarbero_FCitaIgualFFinNovedad() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 13:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 13:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
 		
-		Cita cita1 = CitaDataBuilder.aCitaDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFecha(dateTimeFormatter.parse("20191214 10:00")).build();
-		Cita cita2 = CitaDataBuilder.aCitaDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFecha(dateTimeFormatter.parse("20191214 14:00")).build();
+		Cita cita1 = Cita.builder()
+				.barbero(barberoNovedad)
+				.fecha(dateTimeFormatter.parse("20191214 10:00")).build();
+		Cita cita2 = Cita.builder()
+				.barbero(barberoNovedad)
+				.fecha(dateTimeFormatter.parse("20191214 14:00")).build();
 		List<Cita> citasBarbero = new ArrayList<>();
 		citasBarbero.add(cita1);
 		citasBarbero.add(cita2);
@@ -630,19 +627,19 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaCitaBarbero_CitasFueraRangoFechasNovedad() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 13:00"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 13:00"))
+				.fechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
 		
-		Cita cita1 = CitaDataBuilder.aCitaDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFecha(dateTimeFormatter.parse("20191214 10:00")).build();
-		Cita cita2 = CitaDataBuilder.aCitaDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFecha(dateTimeFormatter.parse("20191214 14:30")).build();
+		Cita cita1 = Cita.builder()
+				.barbero(barberoNovedad)
+				.fecha(dateTimeFormatter.parse("20191214 10:00")).build();
+		Cita cita2 = Cita.builder()
+				.barbero(barberoNovedad)
+				.fecha(dateTimeFormatter.parse("20191214 14:30")).build();
 		List<Cita> citasBarbero = new ArrayList<>();
 		citasBarbero.add(cita1);
 		citasBarbero.add(cita2);
@@ -659,12 +656,12 @@ public class ServicioNovedadTest {
 	
 	@Test
 	public void novedadEnRangoFechaCitaBarbero_BarberoSinCitas() throws Exception {
-		Barbero barberoNovedad = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoNovedad = Barbero.builder().id(1l).nombre("test").build(); 
 		
-		Novedad nuevaNovedad = NovedadDataBuilder.aNovedadDataBuilder()
-				.withBarbero(barberoNovedad)
-				.withFechaInicio(dateTimeFormatter.parse("20191214 13:01"))
-				.withFechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
+		Novedad nuevaNovedad = Novedad.builder()
+				.barbero(barberoNovedad)
+				.fechaInicio(dateTimeFormatter.parse("20191214 13:01"))
+				.fechaFin(dateTimeFormatter.parse("20191214 14:00")).build();
 		
 		List<Cita> citasBarbero = new ArrayList<>();		
 		Mockito.when(repositorioCita.retornar(barberoNovedad.getId())).thenReturn(citasBarbero);

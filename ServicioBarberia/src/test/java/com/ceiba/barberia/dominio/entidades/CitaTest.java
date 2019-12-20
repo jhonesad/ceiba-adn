@@ -6,8 +6,6 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
-
 public class CitaTest {
 
 	@Test
@@ -21,7 +19,7 @@ public class CitaTest {
 	public void validarGettersSetters() {
 		Long id = 1l;
 		Date fecha = new Date();
-		Barbero barbero = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barbero = Barbero.builder().id(1l).nombre("test").build(); 
 		Boolean corteCabello = false;
 		Boolean corteBarba = true;
 		Boolean lavado = false;

@@ -1,4 +1,4 @@
-package com.ceiba.barberia.testdatabuilder;
+package com.ceiba.barberia.infraestructura.entidad;
 
 import com.ceiba.barberia.infraestructura.entidad.BarberoEntidad;
 
@@ -27,7 +27,7 @@ public class BarberoEntidadDataBuilder {
 		return barbero;
 	}
 	
-	public static BarberoEntidadDataBuilder aBarberoDataBuilder() {
+	public static BarberoEntidadDataBuilder aBuilder() {
 		return new BarberoEntidadDataBuilder();
 	}
 }

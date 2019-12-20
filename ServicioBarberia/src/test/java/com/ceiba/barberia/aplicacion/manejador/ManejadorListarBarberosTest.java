@@ -13,56 +13,29 @@ import com.ceiba.barberia.aplicacion.comando.ComandoBarbero;
 import com.ceiba.barberia.aplicacion.fabrica.FabricaBarbero;
 import com.ceiba.barberia.dominio.entidades.Barbero;
 import com.ceiba.barberia.dominio.servicio.ServicioBarbero;
-import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
-import com.ceiba.barberia.testdatabuilder.ComandoBarberoDataBuilder;
 
-public class ManejadorBarberosTest {
+public class ManejadorListarBarberosTest {
 
 	private ServicioBarbero servicioBarbero;
 	private FabricaBarbero fabricaBarbero;
-	private ManejadorBarberos manejadorBarberos;
+	private ManejadorListarBarberos manejadorListarBarberos;
 	
 	@Before
 	public void setUp() {
 		servicioBarbero = Mockito.mock(ServicioBarbero.class);
 		fabricaBarbero = Mockito.mock(FabricaBarbero.class);
-		manejadorBarberos = new ManejadorBarberos(servicioBarbero, fabricaBarbero);
+		manejadorListarBarberos = new ManejadorListarBarberos(servicioBarbero, fabricaBarbero);
 	}
 	
 	@Test
 	public void listarBarberos() {
-		Barbero barberoMock = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoMock = Barbero.builder().id(1l).nombre("test").build(); 
 		List<Barbero> listaBarberosMock = new ArrayList<Barbero>();
 		listaBarberosMock.add(barberoMock);
 		Mockito.when(servicioBarbero.listar()).thenReturn(listaBarberosMock);
 		
-		List<ComandoBarbero> barberos = manejadorBarberos.listar();
+		List<ComandoBarbero> barberos = manejadorListarBarberos.ejecutar();
 		
 		assertFalse(barberos.isEmpty());
-	}
-	
-	@Test
-	public void crearBarbero() {
-		Long id = 4l; 
-		String nombre = "nombre";
-		Barbero barberoMock = BarberoDataBuilder.aBarberoDataBuilder()
-				.withId(id)
-				.withNombre(nombre)
-				.build();
-		ComandoBarbero comandoBarberoMock = ComandoBarberoDataBuilder
-				.aComandoBarberoDataBuilder()
-				.withId(null)
-				.withNombre(nombre)
-				.build();
-		
-		Mockito.when(fabricaBarbero.crear(comandoBarberoMock))
-			.thenReturn(barberoMock);
-		Mockito.when(servicioBarbero.crear(barberoMock)).thenReturn(barberoMock);
-		
-		ComandoBarbero barbero = manejadorBarberos.crear(comandoBarberoMock);
-		
-		assertNotNull(barbero);
-		assertEquals(id, barbero.getId());
-		assertEquals(nombre, barbero.getNombre());
 	}
 }

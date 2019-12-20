@@ -7,8 +7,6 @@ import org.junit.Test;
 
 import com.ceiba.barberia.aplicacion.comando.ComandoBarbero;
 import com.ceiba.barberia.dominio.entidades.Barbero;
-import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
-import com.ceiba.barberia.testdatabuilder.ComandoBarberoDataBuilder;
 
 public class FabricaBarberoTest {
 	
@@ -24,12 +22,7 @@ public class FabricaBarberoTest {
 	public void validarCrearBarberoDominio() {
 		Long id = 9l;
 		String nombre = "nombre";
-		
-		ComandoBarbero comandoBarbero = ComandoBarberoDataBuilder
-				.aComandoBarberoDataBuilder()
-				.withId(id)
-				.withNombre(nombre)
-				.build();
+		ComandoBarbero comandoBarbero = ComandoBarbero.builder().id(id).nombre(nombre).build();
 		
 		Barbero instancia = fabrica.crear(comandoBarbero);
 		
@@ -43,9 +36,9 @@ public class FabricaBarberoTest {
 		Long id = 9l;
 		String nombre = "nombre";
 		
-		Barbero barbero = BarberoDataBuilder.aBarberoDataBuilder()
-				.withId(id)
-				.withNombre(nombre)
+		Barbero barbero = Barbero.builder()
+				.id(id)
+				.nombre(nombre)
 				.build();
 		
 		ComandoBarbero instancia = fabrica.barbero(barbero);

@@ -13,7 +13,6 @@ import org.junit.Test;
 import com.ceiba.barberia.dominio.entidades.Barbero;
 import com.ceiba.barberia.dominio.exception.BarberiaBusinessLogicException;
 import com.ceiba.barberia.dominio.puerto.repositorio.RepositorioBarbero;
-import com.ceiba.barberia.testdatabuilder.BarberoDataBuilder;
 
 public class ServicioBarberoTest {
 
@@ -28,7 +27,7 @@ public class ServicioBarberoTest {
 	
 	@Test
 	public void listarBarberos() {
-		Barbero barbero = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barbero = Barbero.builder().id(1l).nombre("test").build(); 
 		List<Barbero> listaMock = new ArrayList<>();
 		listaMock.add(barbero);
 		Mockito.when(repositorioBarbero.listar()).thenReturn(listaMock);
@@ -40,7 +39,7 @@ public class ServicioBarberoTest {
 	
 	@Test
 	public void crearBarbero() {
-		Barbero barberoMock = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoMock = Barbero.builder().id(1l).nombre("test").build(); 
 		Mockito.when(repositorioBarbero.crear(barberoMock)).thenReturn(barberoMock);
 		Mockito.doReturn(false).when(servicioBarbero).nombreBarberoExisteEnBD(barberoMock.getNombre());
 		
@@ -52,7 +51,7 @@ public class ServicioBarberoTest {
 	
 	@Test
 	public void crearBarberoQueExisteEnBD() {
-		Barbero barberoMock = BarberoDataBuilder.aBarberoDataBuilder().build();
+		Barbero barberoMock = Barbero.builder().id(1l).nombre("test").build(); 
 		Mockito.when(repositorioBarbero.crear(barberoMock)).thenReturn(barberoMock);
 		Mockito.doReturn(true).when(servicioBarbero).nombreBarberoExisteEnBD(barberoMock.getNombre());
 		
@@ -68,7 +67,7 @@ public class ServicioBarberoTest {
 	@Test
 	public void nombreBarberoExisteEnBD() {
 		String nombreConsulta = "bar";
-		Barbero barbero1 = BarberoDataBuilder.aBarberoDataBuilder().withId(1l).withNombre(nombreConsulta).build();
+		Barbero barbero1 = Barbero.builder().id(1l).nombre(nombreConsulta).build();
 		List<Barbero> listaMock = new ArrayList<>();
 		listaMock.add(barbero1);
 		Mockito.when(repositorioBarbero.listarPorNombre(nombreConsulta)).thenReturn(listaMock);

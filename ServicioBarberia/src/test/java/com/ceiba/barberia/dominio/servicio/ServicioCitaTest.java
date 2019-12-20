@@ -14,13 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.ceiba.barberia.dominio.entidades.Barbero;
 import com.ceiba.barberia.dominio.entidades.Cita;
 import com.ceiba.barberia.dominio.entidades.Novedad;
 import com.ceiba.barberia.dominio.exception.BarberiaBusinessLogicException;
 import com.ceiba.barberia.dominio.puerto.repositorio.RepositorioCita;
 import com.ceiba.barberia.dominio.puerto.repositorio.RepositorioNovedad;
-import com.ceiba.barberia.testdatabuilder.CitaDataBuilder;
-import com.ceiba.barberia.testdatabuilder.NovedadDataBuilder;
 
 public class ServicioCitaTest {
 	
@@ -39,25 +38,25 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void listarCitas() {
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
+		Cita citaMock = Cita.builder().build();
 		List<Cita> listaCitasMock = new ArrayList<Cita>();
 		listaCitasMock.add(citaMock);
 		Mockito.when(repositorioCita.retornar()).thenReturn(listaCitasMock);
 		
-		List<Cita> listaCitas = servicioCita.listarCitas();
+		List<Cita> listaCitas = servicioCita.listar();
 		
 		assertFalse(listaCitas.isEmpty());
 	}
 	
 	@Test
 	public void agendarCitaSinNovedadesYFechaDisponible() {
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
+		Cita citaMock = Cita.builder().build();
 		Mockito.when(repositorioCita.crear(citaMock)).thenReturn(citaMock);
 		Mockito.doReturn(false).when(servicioCita).barberoTieneNovedadEnFechaCita(citaMock);
 		Mockito.doReturn(false).when(servicioCita).barberoYaTieneCitaAsignadaEnFechaCita(citaMock);
 		Mockito.doReturn(false).when(servicioCita).esFechaCitaMenorAlMomento(citaMock);
 		
-		Cita cita = servicioCita.agendarCita(citaMock);
+		Cita cita = servicioCita.agendar(citaMock);
 		
 		assertNotNull(cita);
 		assertEquals(citaMock, cita);
@@ -65,11 +64,11 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void agendarCitaConNovedadEnFecha() {
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
+		Cita citaMock = Cita.builder().build();
 		Mockito.doReturn(true).when(servicioCita).barberoTieneNovedadEnFechaCita(citaMock);
 		
 		try {
-			servicioCita.agendarCita(citaMock);
+			servicioCita.agendar(citaMock);
 			fail("Deberia retornar excepcion por: " + ServicioCita.ERROR_BARBERO_CON_NOVEDAD_EN_FECHA);
 		} catch(Exception ex) {
 			assertTrue(ex instanceof BarberiaBusinessLogicException);
@@ -79,12 +78,12 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void agendarCitaSinDisponibilidadEnFecha() {
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
+		Cita citaMock = Cita.builder().build();
 		Mockito.doReturn(false).when(servicioCita).barberoTieneNovedadEnFechaCita(citaMock);
 		Mockito.doReturn(true).when(servicioCita).barberoYaTieneCitaAsignadaEnFechaCita(citaMock);
 		
 		try {
-			servicioCita.agendarCita(citaMock);
+			servicioCita.agendar(citaMock);
 			fail("Deberia retornar excepcion por: " + ServicioCita.ERROR_BARBERO_SIN_DOSPINILIDAD_EN_FECHA);
 		} catch(Exception ex) {
 			assertTrue(ex instanceof BarberiaBusinessLogicException);
@@ -94,13 +93,13 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void agendarCitaConFechaPasada() {
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
+		Cita citaMock = Cita.builder().build();
 		Mockito.doReturn(false).when(servicioCita).barberoTieneNovedadEnFechaCita(citaMock);
 		Mockito.doReturn(false).when(servicioCita).barberoYaTieneCitaAsignadaEnFechaCita(citaMock);
 		Mockito.doReturn(true).when(servicioCita).esFechaCitaMenorAlMomento(citaMock);
 		
 		try {
-			servicioCita.agendarCita(citaMock);
+			servicioCita.agendar(citaMock);
 			fail("Deberia retornar excepcion por: " + ServicioCita.ERROR_FECHA_PASADA);
 		} catch(Exception ex) {
 			assertTrue(ex instanceof BarberiaBusinessLogicException);
@@ -110,7 +109,7 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void barberoNoTieneNovedades() {
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
+		Cita citaMock = Cita.builder().barbero(Barbero.builder().build()).build();
 		Mockito.when(repositorioNovedad.listarPorBarbero(Mockito.any())).thenReturn(null);
 		Mockito.doReturn(true).when(servicioCita).listaNovedadesEsNullaOVacia(Mockito.any());
 		
@@ -121,8 +120,8 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void barberoTieneNovedadesEnOtrasFechas() {
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
-		Novedad novedadMock = NovedadDataBuilder.aNovedadDataBuilder().build();
+		Cita citaMock = Cita.builder().barbero(Barbero.builder().build()).build();
+		Novedad novedadMock = Novedad.builder().barbero(Barbero.builder().build()).build();
 		List<Novedad> novedadesMock = new ArrayList<Novedad>();
 		novedadesMock.add(novedadMock);
 		Mockito.when(repositorioNovedad.listarPorBarbero(Mockito.any())).thenReturn(novedadesMock);
@@ -136,8 +135,8 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void barberoTieneNovedadEnFechaCita() {
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
-		Novedad novedadMock = NovedadDataBuilder.aNovedadDataBuilder().build();
+		Cita citaMock = Cita.builder().barbero(Barbero.builder().build()).build();
+		Novedad novedadMock = Novedad.builder().barbero(Barbero.builder().build()).build();
 		List<Novedad> novedadesMock = new ArrayList<Novedad>();
 		novedadesMock.add(novedadMock);
 		Mockito.when(repositorioNovedad.listarPorBarbero(Mockito.any())).thenReturn(novedadesMock);
@@ -151,7 +150,7 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void barberoNoTieneCitasAsignadas() {
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
+		Cita citaMock = Cita.builder().barbero(Barbero.builder().build()).build();
 		Mockito.when(repositorioCita.retornar(Mockito.any())).thenReturn(null);
 		Mockito.doReturn(true).when(servicioCita).listaCitasEsNullaOVacia(Mockito.any());
 		
@@ -162,8 +161,8 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void barberoTieneCitasEnDiferentesFechas() {
-		Cita citaCrearMock = CitaDataBuilder.aCitaDataBuilder().withId(11l).build();
-		Cita citaConsultaMock = CitaDataBuilder.aCitaDataBuilder().withId(12l).build();
+		Cita citaCrearMock = Cita.builder().id(11l).barbero(Barbero.builder().build()).build();
+		Cita citaConsultaMock = Cita.builder().id(12l).build();
 		List<Cita> listaCitasMock = new ArrayList<Cita>();
 		listaCitasMock.add(citaConsultaMock);
 		Mockito.when(repositorioCita.retornar(Mockito.any())).thenReturn(listaCitasMock);
@@ -177,8 +176,8 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void barberoYaTieneCitaAsignadaEnFechaCita() {
-		Cita citaCrearMock = CitaDataBuilder.aCitaDataBuilder().withId(11l).build();
-		Cita citaConsultaMock = CitaDataBuilder.aCitaDataBuilder().withId(12l).build();
+		Cita citaCrearMock = Cita.builder().id(11l).barbero(Barbero.builder().build()).build();
+		Cita citaConsultaMock = Cita.builder().id(12l).build();
 		List<Cita> listaCitasMock = new ArrayList<Cita>();
 		listaCitasMock.add(citaConsultaMock);
 		Mockito.when(repositorioCita.retornar(Mockito.any())).thenReturn(listaCitasMock);
@@ -210,7 +209,7 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void listaCitasNoEsNullaOVacia() {
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().build();
+		Cita citaMock = Cita.builder().build();
 		List<Cita> listaCitasMock = new ArrayList<Cita>();
 		listaCitasMock.add(citaMock);
 		
@@ -239,7 +238,7 @@ public class ServicioCitaTest {
 	
 	@Test
 	public void listaNovedadesNoEsNullaOVacia() {
-		Novedad novedadMock = NovedadDataBuilder.aNovedadDataBuilder().build();
+		Novedad novedadMock = Novedad.builder().barbero(Barbero.builder().build()).build();
 		List<Novedad> listaNovedadesMock = new ArrayList<Novedad>();
 		listaNovedadesMock.add(novedadMock);
 		
@@ -329,7 +328,7 @@ public class ServicioCitaTest {
 		cal.setTime(ahora);
 		cal.add(Calendar.DATE, -1);
 		Date fecha = cal.getTime();
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().withFecha(fecha).build();
+		Cita citaMock = Cita.builder().fecha(fecha).build();
 		
 		boolean validacion = servicioCita.esFechaCitaMenorAlMomento(citaMock);
 		
@@ -343,7 +342,7 @@ public class ServicioCitaTest {
 		cal.setTime(ahora);
 		cal.add(Calendar.DATE, 1);
 		Date fecha = cal.getTime();
-		Cita citaMock = CitaDataBuilder.aCitaDataBuilder().withFecha(fecha).build();
+		Cita citaMock = Cita.builder().fecha(fecha).build();
 		
 		boolean validacion = servicioCita.esFechaCitaMenorAlMomento(citaMock);
 		
